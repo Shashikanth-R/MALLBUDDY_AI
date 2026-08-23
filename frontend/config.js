@@ -13,13 +13,13 @@
 
     if (USE_LIVE_BACKEND || hostname.includes('onrender.com')) {
         // Production on Render
-        backendUrl = 'https://mallbuddy.onrender.com';
+        backendUrl = 'https://mallbuddy-ai.onrender.com';
     } else if (hostname === 'localhost' || hostname === '127.0.0.1') {
         // Local development
         backendUrl = 'http://localhost:5000';
     } else {
         // Fallback - assume same origin or update for your custom domain
-        backendUrl = 'https://mallbuddy.onrender.com';
+        backendUrl = 'https://mallbuddy-ai.onrender.com';
     }
 
     // Make BACKEND_URL globally available
