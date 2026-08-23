@@ -5,13 +5,19 @@
  */
 
 (function () {
-    // Determine if the current page is public
-    const publicPages = ['login.html', 'signup.html'];
+    // Determine page category
     const currentPath = window.location.pathname;
     
-    // If the path is just "/" or ends with "/", treat it as index.html (protected)
-    const isRoot = currentPath === '/' || currentPath.endsWith('/');
-    const isPublicPage = publicPages.some(page => currentPath.endsWith(page));
+    // Guest-only pages (redirect away if logged in)
+    const guestOnlyPages = ['login.html', 'signup.html'];
+    const isGuestOnly = guestOnlyPages.some(page => currentPath.endsWith(page));
+    
+    // Hybrid pages (accessible to everyone, but shows user info if logged in)
+    const hybridPages = ['index.html'];
+    const isHybrid = hybridPages.some(page => currentPath.endsWith(page)) || currentPath === '/' || currentPath.endsWith('/MALLBUDDY-main/frontend/');
+    
+    // Protected pages (redirect to login if not logged in)
+    const isProtected = !isGuestOnly && !isHybrid;
 
     // Handle bfcache (Back/Forward Cache) restores
     window.addEventListener('pageshow', function (event) {
@@ -25,8 +31,8 @@
         const token = localStorage.getItem('token');
 
         if (!token) {
-            if (!isPublicPage) {
-                forceLogout();
+            if (isProtected) {
+                requireLogin();
             }
             return;
         }
@@ -45,36 +51,35 @@
 
             if (!response.ok) {
                 // Token invalid or expired
-                if (!isPublicPage) {
-                    forceLogout();
+                if (isProtected) {
+                    requireLogin();
                 } else {
-                    // Clear invalid state on public pages too
+                    // Clear invalid state on hybrid/guest pages too
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                     localStorage.removeItem('userType');
                 }
             } else {
                 // Token is valid
-                if (isPublicPage) {
+                if (isGuestOnly) {
                     // Active session, redirect away from login/signup
                     window.location.replace('index.html');
                 } else {
-                    // Valid session on protected page. Apply user info if DOM is ready.
+                    // Valid session on protected or hybrid page. Apply user info if DOM is ready.
                     applyUserInfo();
                 }
             }
         } catch (error) {
             console.error('Auth verification failed:', error);
-            // On network error, we don't forcefully logout unless we know it's a 401
-            // But we do apply user info from local storage if available so offline/flaky connection still works
-            if (!isPublicPage) {
+            // On network error, apply user info from local storage if available so offline works
+            if (!isGuestOnly) {
                 applyUserInfo();
             }
         }
     }
 
-    // Forcefully clear session and redirect
-    function forceLogout() {
+    // Forcefully clear session and redirect to login (for unauthorized access)
+    function requireLogin() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('userType');
