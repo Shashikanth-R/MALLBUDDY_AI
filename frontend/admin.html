@@ -2,10 +2,15 @@
 <html lang="en">
 
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - MallBuddy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -20,7 +25,7 @@
         }
 
         .admin-header {
-            background: linear-gradient(135deg, #B794D4 0%, #E8A0B0 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
             color: white;
             padding: 20px 40px;
             display: flex;
@@ -77,7 +82,7 @@
         .stat-value {
             font-size: 36px;
             font-weight: 700;
-            color: #9B7BC7;
+            color: var(--primary);
             margin: 10px 0;
         }
 
@@ -105,8 +110,8 @@
         }
 
         .tab.active {
-            color: #9B7BC7;
-            border-bottom-color: #9B7BC7;
+            color: var(--primary);
+            border-bottom-color: var(--primary);
         }
 
         .tab-content {
@@ -125,7 +130,7 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #B794D4 0%, #E8A0B0 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
             color: white;
             border: none;
             padding: 12px 24px;
@@ -239,6 +244,8 @@
             cursor: pointer;
         }
     </style>
+    <script src="config.js"></script>
+    <script src="auth-guard.js"></script>
 </head>
 
 <body>

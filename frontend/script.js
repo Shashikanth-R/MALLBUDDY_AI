@@ -3,34 +3,7 @@ let sessionId = generateSessionId();
 let chatHistory = [];
 let isFirstMessage = true;
 
-// Check if user is logged in
-function checkUserSession() {
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const userType = localStorage.getItem('userType');
 
-    if (token && user.name) {
-        // User is logged in
-        document.getElementById('loginBtn').style.display = 'none';
-        document.getElementById('signupBtn').style.display = 'none';
-        document.getElementById('userInfo').style.display = 'inline';
-        document.getElementById('userInfo').textContent = `Hello, ${user.name}!`;
-        document.getElementById('logoutBtn').style.display = 'inline';
-
-        // Update welcome message
-        document.getElementById('welcomeTitle').textContent = `Welcome back, ${user.name}!`;
-        document.getElementById('welcomeSubtitle').textContent = `Great to see you again! How can I assist you today?`;
-    }
-}
-
-// Logout function
-function logout() {
-    localStorage.clear();
-    window.location.reload();
-}
-
-// Initialize session check
-checkUserSession();
 
 // Generate unique session ID
 function generateSessionId() {
@@ -203,7 +176,12 @@ function addMessage(text, sender, suggestions = null) {
 
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar';
-    avatar.textContent = sender === 'bot' ? '🤖' : '👤';
+    
+    // Premium SVG Icons
+    const botSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>`;
+    const userSvg = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    
+    avatar.innerHTML = sender === 'bot' ? botSvg : userSvg;
 
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
@@ -256,7 +234,7 @@ function showTypingIndicator() {
 
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar';
-    avatar.textContent = '🤖';
+    avatar.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>`;
 
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
@@ -325,3 +303,30 @@ if (typeof module !== 'undefined' && module.exports) {
         generateSessionId
     };
 }
+
+// ==========================================
+// SCROLL ANIMATIONS
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Add scroll-animate class to sections and cards dynamically
+    const elementsToAnimate = document.querySelectorAll('.ai-section, .features-grid, .facilities-grid, .feature-card, .facility-item, .store-card, .offer-card, .filter-section');
+    elementsToAnimate.forEach(el => el.classList.add('scroll-animate'));
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    });
+
+    // We delay slightly to allow DOM to settle before observing
+    setTimeout(() => {
+        document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
+    }, 100);
+});

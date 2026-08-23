@@ -2,127 +2,178 @@
 <html lang="en">
 
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MallBuddy - Your Intelligent Shopping Mall Assistant</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>MallBuddy - The Premium Shopping Experience</title>
+    <!-- Premium Fonts: Playfair Display for Headings, Inter for Body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+    <script src="auth-guard.js"></script>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
+    <!-- Premium Header -->
+        <header class="header">
         <div class="header-container">
             <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
                 <div class="logo-icon">
-                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 8px;">
+                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
                 </div>
-                <span class="logo-text">MallBuddy(Elements Mall)</span>
+                <span class="logo-text">MallBuddy</span>
             </div>
+            <button class="mobile-menu-btn" onclick="document.getElementById('navMenu').classList.toggle('active')" aria-label="Toggle Navigation">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
             <nav class="nav-menu" id="navMenu">
-                <button class="nav-btn" onclick="window.location.href='stores.html'">
-                    <span class="nav-icon">🏪</span>
-                    Stores
-                </button>
-                <button class="nav-btn" onclick="window.location.href='map.html'">
-                    <span class="nav-icon">🗺️</span>
-                    Mall Map
-                </button>
-                <button class="nav-btn" onclick="window.location.href='offers.html'">
-                    <span class="nav-icon">🎁</span>
-                    Offers
-                </button>
+                <button class="nav-btn" onclick="window.location.href='stores.html'">Stores</button>
+                <button class="nav-btn" onclick="window.location.href='offers.html'">Offers</button>
+                <button class="nav-btn" onclick="window.location.href='map.html'">Navigate</button>
+                <div class="nav-divider"></div>
                 <button class="btn-login" onclick="navigateTo('login')" id="loginBtn">Login</button>
                 <button class="btn-signup" onclick="navigateTo('signup')" id="signupBtn">Sign Up</button>
-                <span id="userInfo" style="display: none; color: white; margin-right: 10px;"></span>
+                <span id="userInfo" style="display: none; color: var(--text-primary); font-weight: 500; padding: 0.5rem 1rem;"></span>
                 <button class="btn-logout" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
             </nav>
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <div class="container">
-            <!-- Welcome Card -->
-            <div class="welcome-card" id="welcomeCard">
-                <div class="welcome-header">
-                    <span class="robot-emoji">🤖</span>
-                    <h1 class="welcome-title" id="welcomeTitle">Welcome to MallBuddy!</h1>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Experience the Art of Shopping</h1>
+                <p class="hero-subtitle">Your intelligent concierge for finding the perfect stores, discovering exclusive offers, and navigating the mall with effortless elegance.</p>
+                <div class="hero-actions">
+                    <button class="btn-hero-primary" onclick="document.getElementById('ai-assistant-section').scrollIntoView({behavior: 'smooth'})">Ask the Concierge</button>
+                    <button class="btn-hero-secondary" onclick="window.location.href='stores.html'">Explore Stores</button>
                 </div>
-                <p class="welcome-subtitle" id="welcomeSubtitle">Your intelligent shopping mall assistant for stores,
-                    offers, and navigation
-                </p>
+            </div>
+        </section>
 
-                <!-- Quick Actions Section -->
-                <div class="quick-actions-section">
-                    <h2 class="section-title">How can I help you today?</h2>
-                    <p class="section-subtitle">Ask me about store locations, current offers, directions, or general
-                        mall information</p>
+        <!-- AI Mall Assistant Section -->
+        <section id="ai-assistant-section" class="ai-section">
+            <div class="section-header-centered">
+                <h2 class="section-heading">Digital Concierge</h2>
+                <p class="section-subheading">Ask me anything about store locations, ongoing sales, or facilities.</p>
+            </div>
+            <div class="container ai-container">
+                <!-- Welcome Card (Original ID preserved) -->
+                <div class="welcome-card" id="welcomeCard">
+                    <div class="welcome-header">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ai-header-icon"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                        <h1 class="welcome-title" id="welcomeTitle">How may I assist you today?</h1>
+                    </div>
+                    <p class="welcome-subtitle" id="welcomeSubtitle">I can guide you to stores, check current offers, and provide mall timings.</p>
 
-                    <div class="quick-actions-grid">
-                        <button class="action-card" onclick="sendQuickQuestion('What offers are available today?')">
-                            <span class="action-icon">🔥</span>
-                            <span class="action-text">What offers are available today?</span>
-                        </button>
+                    <!-- Quick Actions Section -->
+                    <div class="quick-actions-section">
+                        <div class="quick-actions-grid">
+                            <button class="action-card" onclick="sendQuickQuestion('What offers are available today?')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"/><path d="M7 7h.01"/></svg>
+                                <span class="action-text">What offers are available today?</span>
+                            </button>
+                            <button class="action-card" onclick="sendQuickQuestion('Where is Adidas located?')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <span class="action-text">Where is Adidas located?</span>
+                            </button>
+                            <button class="action-card" onclick="sendQuickQuestion('How do I reach PVR from the main entrance?')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                                <span class="action-text">How do I reach PVR?</span>
+                            </button>
+                            <button class="action-card" onclick="sendQuickQuestion('What are the mall timings?')">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="action-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                <span class="action-text">What are the mall timings?</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-                        <button class="action-card" onclick="sendQuickQuestion('Where is Adidas located?')">
-                            <span class="action-icon">📍</span>
-                            <span class="action-text">Where is Adidas located?</span>
-                        </button>
+                <!-- Chat Messages Area (Original ID preserved) -->
+                <div class="chat-messages-container" id="chatMessagesContainer" style="display: none;">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Messages will be added here dynamically by script.js -->
+                    </div>
+                </div>
 
-                        <button class="action-card"
-                            onclick="sendQuickQuestion('How do I reach PVR from the main entrance?')">
-                            <span class="action-icon">�️</span>
-                            <span class="action-text">How do I reach PVR from the main entrance?</span>
-                        </button>
-
-                        <button class="action-card" onclick="sendQuickQuestion('What are the mall timings?')">
-                            <span class="action-icon">🕐</span>
-                            <span class="action-text">What are the mall timings?</span>
-                        </button>
-
-                        <button class="action-card" onclick="sendQuickQuestion('Show me fashion stores')">
-                            <span class="action-icon">�</span>
-                            <span class="action-text">Show me fashion stores</span>
-                        </button>
-
-                        <button class="action-card" onclick="sendQuickQuestion('Where is the food court?')">
-                            <span class="action-icon">�</span>
-                            <span class="action-text">Where is the food court?</span>
+                <!-- Chat Input (Original ID preserved) -->
+                <div class="chat-input-section" id="chatInputSection">
+                    <div class="chat-input-wrapper">
+                        <input type="text" class="chat-input" id="chatInput"
+                            placeholder="Ask the concierge..."
+                            onkeypress="handleKeyPress(event)" />
+                        <button class="send-button" onclick="sendMessage()" id="sendBtn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="send-icon-svg">
+                                <path d="M18 2L9 11M18 2L12 18L9 11M18 2L2 8L9 11" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
                         </button>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <!-- Chat Messages Area (Hidden Initially) -->
-            <div class="chat-messages-container" id="chatMessagesContainer" style="display: none;">
-                <div class="chat-messages" id="chatMessages">
-                    <!-- Messages will be added here dynamically -->
+        <!-- Static Features / Find Your Way -->
+        <section class="features-section">
+            <div class="features-grid">
+                <div class="feature-card" onclick="window.location.href='stores.html'">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <h3>Premium Stores</h3>
+                    <p>Discover our curated selection of international and luxury brands.</p>
+                </div>
+                <div class="feature-card" onclick="window.location.href='offers.html'">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/></svg>
+                    <h3>Exclusive Offers</h3>
+                    <p>Uncover seasonal discounts and limited-time deals.</p>
+                </div>
+                <div class="feature-card" onclick="window.location.href='map.html'">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feature-icon"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+                    <h3>Interactive Map</h3>
+                    <p>Find your way around effortlessly with our digital directory.</p>
                 </div>
             </div>
+        </section>
 
-            <!-- Chat Input (Fixed at Bottom) -->
-            <div class="chat-input-section">
-                <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" id="chatInput"
-                        placeholder="Ask me about stores, offers, or directions..."
-                        onkeypress="handleKeyPress(event)" />
-                    <button class="send-button" onclick="sendMessage()" id="sendBtn">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M18 2L9 11M18 2L12 18L9 11M18 2L2 8L9 11" stroke="white" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
-                </div>
+        <!-- Facilities Section -->
+        <section class="facilities-section">
+            <div class="section-header-centered">
+                <h2 class="section-heading">Guest Services & Facilities</h2>
+            </div>
+            <div class="facilities-grid">
+                <div class="facility-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg> Valet Parking</div>
+                <div class="facility-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13a10 10 0 0 1 14 0"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r="1"/></svg> Free Wi-Fi</div>
+                <div class="facility-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0Z"/></svg> Family Rooms</div>
+                <div class="facility-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/></svg> Wheelchair Access</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="logo-text">MallBuddy</span>
+                <p>The ultimate destination for luxury, lifestyle, and leisure.</p>
+            </div>
+            <div class="footer-links">
+                <a href="stores.html">Stores Directory</a>
+                <a href="offers.html">Latest Offers</a>
+                <a href="map.html">Mall Map</a>
+                <a href="login.html">Member Login</a>
             </div>
         </div>
-    </main>
+        <div class="footer-bottom">
+            <p>&copy; 2024 MallBuddy. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="config.js"></script>
     <script src="analytics-tracking.js"></script>
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=4"></script>
 </body>
 
 </html>

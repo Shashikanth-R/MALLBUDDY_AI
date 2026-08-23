@@ -78,24 +78,17 @@ function initCharts() {
     });
 }
 
-// Check authentication
+// Check admin role
 function checkAuth() {
-    const token = localStorage.getItem('token');
     const userType = localStorage.getItem('userType');
     const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-    if (!token || userType !== 'admin') {
-        window.location.href = 'login.html';
+    if (userType !== 'admin') {
+        window.location.replace('index.html');
         return;
     }
 
     document.getElementById('adminName').textContent = user.name || 'Admin';
-}
-
-// Logout
-function logout() {
-    localStorage.clear();
-    window.location.href = 'index.html';
 }
 
 // Switch tabs

@@ -2,11 +2,16 @@
 <html lang="en">
 
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mall Map - MallBuddy</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .map-container {
             max-width: 1400px;
@@ -31,7 +36,7 @@
 
         /* Navigation Mode Header */
         .nav-mode-header {
-            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             color: white;
             border-radius: 20px;
             padding: 1.5rem 2rem;
@@ -141,14 +146,14 @@
         }
 
         .floor-btn:hover {
-            border-color: #9B7BC7;
+            border-color: var(--primary);
             background: #FDF8FF;
         }
 
         .floor-btn.active {
-            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             color: white;
-            border-color: #9B7BC7;
+            border-color: var(--primary);
         }
 
         .floor-btn.has-route {
@@ -273,7 +278,7 @@
         /* Route Path */
         .route-path {
             fill: none;
-            stroke: #9B7BC7;
+            stroke: var(--primary);
             stroke-width: 5;
             stroke-linecap: round;
             stroke-linejoin: round;
@@ -327,7 +332,7 @@
             padding: 0.75rem;
             background: white;
             border-radius: 8px;
-            border-left: 4px solid #9B7BC7;
+            border-left: 4px solid var(--primary);
         }
 
         .direction-step.current {
@@ -397,7 +402,7 @@
         }
 
         .store-item:hover {
-            border-color: #9B7BC7;
+            border-color: var(--primary);
             background: white;
         }
 
@@ -442,31 +447,32 @@
             }
         }
     </style>
+    <script src="config.js"></script>
+    <script src="auth-guard.js"></script>
 </head>
 
 <body>
     <!-- Header -->
-    <header class="header">
+            <header class="header">
         <div class="header-container">
             <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
                 <div class="logo-icon">
-                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 8px;">
+                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
                 </div>
                 <span class="logo-text">MallBuddy</span>
             </div>
-            <nav class="nav-menu">
-                <button class="nav-btn" onclick="window.location.href='index.html'">
-                    <span class="nav-icon">🏠</span>
-                    Home
-                </button>
-                <button class="nav-btn" onclick="window.location.href='stores.html'">
-                    <span class="nav-icon">🏪</span>
-                    Stores
-                </button>
-                <button class="nav-btn" onclick="window.location.href='map.html'">
-                    <span class="nav-icon">🗺️</span>
-                    Map
-                </button>
+            <button class="mobile-menu-btn" onclick="document.getElementById('navMenu').classList.toggle('active')" aria-label="Toggle Navigation">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <nav class="nav-menu" id="navMenu">
+                <button class="nav-btn" onclick="window.location.href='stores.html'">Stores</button>
+                <button class="nav-btn" onclick="window.location.href='offers.html'">Offers</button>
+                <button class="nav-btn" onclick="window.location.href='map.html'">Navigate</button>
+                <div class="nav-divider"></div>
+                <button class="btn-login" onclick="navigateTo('login')" id="loginBtn">Login</button>
+                <button class="btn-signup" onclick="navigateTo('signup')" id="signupBtn">Sign Up</button>
+                <span id="userInfo" style="display: none; color: var(--text-primary); font-weight: 500; padding: 0.5rem 1rem;"></span>
+                <button class="btn-logout" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
             </nav>
         </div>
     </header>
@@ -542,7 +548,7 @@
                 <!-- Legend -->
                 <div class="legend">
                     <div class="legend-item">
-                        <div class="legend-color" style="background: #9B7BC7;"></div>
+                        <div class="legend-color" style="background: var(--primary);"></div>
                         <span>Stores</span>
                     </div>
                     <div class="legend-item">

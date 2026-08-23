@@ -2,11 +2,16 @@
 <html lang="en">
 
 <head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offers & Events - MallBuddy</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .offers-container {
             max-width: 1200px;
@@ -48,7 +53,7 @@
 
         .view-all-btn {
             padding: 0.625rem 1.25rem;
-            background: #9B7BC7;
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
@@ -58,7 +63,7 @@
         }
 
         .view-all-btn:hover {
-            background: #8A6AB8;
+            background: var(--primary-soft);
         }
 
         .offers-grid {
@@ -83,7 +88,7 @@
 
         .offer-banner {
             height: 150px;
-            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             display: flex;
             align-items: center;
             justify-content: center;
@@ -115,7 +120,7 @@
         }
 
         .offer-store {
-            color: #9B7BC7;
+            color: var(--primary);
             font-weight: 600;
             font-size: 0.95rem;
             margin-bottom: 0.75rem;
@@ -143,7 +148,7 @@
 
         .offer-action {
             padding: 0.5rem 1rem;
-            background: #9B7BC7;
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
@@ -154,7 +159,7 @@
         }
 
         .offer-action:hover {
-            background: #8A6AB8;
+            background: var(--primary-soft);
         }
 
         .events-grid {
@@ -170,7 +175,7 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
             cursor: pointer;
-            border-left: 4px solid #9B7BC7;
+            border-left: 4px solid var(--primary);
         }
 
         .event-card:hover {
@@ -180,7 +185,7 @@
 
         .event-date {
             display: inline-block;
-            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 8px;
@@ -212,7 +217,7 @@
         }
 
         .featured-section {
-            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             border-radius: 20px;
             padding: 3rem;
             margin-bottom: 3rem;
@@ -235,7 +240,7 @@
         .featured-cta {
             padding: 1rem 2rem;
             background: white;
-            color: #9B7BC7;
+            color: var(--primary);
             border: none;
             border-radius: 12px;
             font-weight: 700;
@@ -255,31 +260,32 @@
             color: #6B7280;
         }
     </style>
+    <script src="config.js"></script>
+    <script src="auth-guard.js"></script>
 </head>
 
 <body>
     <!-- Header -->
-    <header class="header">
+            <header class="header">
         <div class="header-container">
             <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
                 <div class="logo-icon">
-                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 8px;">
+                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
                 </div>
                 <span class="logo-text">MallBuddy</span>
             </div>
-            <nav class="nav-menu">
-                <button class="nav-btn" onclick="window.location.href='index.html'">
-                    <span class="nav-icon">🏠</span>
-                    Home
-                </button>
-                <button class="nav-btn" onclick="window.location.href='stores.html'">
-                    <span class="nav-icon">🏪</span>
-                    Stores
-                </button>
-                <button class="nav-btn" onclick="window.location.href='offers.html'">
-                    <span class="nav-icon">🎁</span>
-                    Offers
-                </button>
+            <button class="mobile-menu-btn" onclick="document.getElementById('navMenu').classList.toggle('active')" aria-label="Toggle Navigation">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+            <nav class="nav-menu" id="navMenu">
+                <button class="nav-btn" onclick="window.location.href='stores.html'">Stores</button>
+                <button class="nav-btn" onclick="window.location.href='offers.html'">Offers</button>
+                <button class="nav-btn" onclick="window.location.href='map.html'">Navigate</button>
+                <div class="nav-divider"></div>
+                <button class="btn-login" onclick="navigateTo('login')" id="loginBtn">Login</button>
+                <button class="btn-signup" onclick="navigateTo('signup')" id="signupBtn">Sign Up</button>
+                <span id="userInfo" style="display: none; color: var(--text-primary); font-weight: 500; padding: 0.5rem 1rem;"></span>
+                <button class="btn-logout" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
             </nav>
         </div>
     </header>
