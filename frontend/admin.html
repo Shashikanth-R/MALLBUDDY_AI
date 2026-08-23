@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MallBuddy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #B794D4 0%, #E8A0B0 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .admin-user {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #9B7BC7;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #9B7BC7;
+            border-bottom-color: #9B7BC7;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .content-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #B794D4 0%, #E8A0B0 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .btn-edit {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 12px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-header">
+        <div class="admin-title" style="cursor: pointer;" onclick="window.location.href='index.html'">🏬 MallBuddy Admin
+            Dashboard</div>
+        <div class="admin-user">
+            <span id="adminName">Admin</span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <!-- Live Statistics -->
+        <div class="stats-grid" id="liveStats">
+            <div class="stat-card">
+                <div class="stat-label">Active Visitors</div>
+                <div class="stat-value" id="activeVisitors">0</div>
+                <div class="stat-sub">Live now</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value" id="totalUsers">0</div>
+                <div class="stat-sub">Registered users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Today's Chats</div>
+                <div class="stat-value" id="todayChats">0</div>
+                <div class="stat-sub">Messages sent</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pending Feedback</div>
+                <div class="stat-value" id="pendingFeedback">0</div>
+                <div class="stat-sub">Needs attention</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="dashboard-tabs">
+            <div class="tabs-scroll">
+                <button class="tab active" onclick="switchTab('analytics')">📊 Analytics</button>
+                <button class="tab" onclick="switchTab('ai-assistant')">🤖 AI Assistant</button>
+                <button class="tab" onclick="switchTab('users')">👥 Users</button>
+                <button class="tab" onclick="switchTab('chats')">💬 Chat History</button>
+                <button class="tab" onclick="switchTab('stores')">🏪 Stores</button>
+                <button class="tab" onclick="switchTab('offers')">🏷️ Offers</button>
+                <button class="tab" onclick="switchTab('events')">📅 Events</button>
+                <button class="tab" onclick="switchTab('facilities')">🚽 Facilities</button>
+                <button class="tab" onclick="switchTab('feedback')">📝 Feedback</button>
+                <button class="tab" onclick="switchTab('logs')">📄 Logs</button>
+                <button class="tab" onclick="switchTab('settings')">⚙️ Settings</button>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics-tab" class="tab-content active">
+            <div class="analytics-grid">
+                <div class="content-card full-width">
+                    <h3>Chat Activity (Last 7 Days)</h3>
+                    <div class="chart-container" id="chatActivityChart" style="height: 300px;"></div>
+                </div>
+                <div class="content-card">
+                    <h3>Top Categories</h3>
+                    <div class="chart-container" id="categoryChart" style="height: 300px;"></div>
+                </div>
+                <div class="content-card">
+                    <h3>Popular Questions</h3>
+                    <div class="popular-keywords" id="popularKeywords"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users-tab" class="tab-content">
+            <div class="content-card">
+                <div class="toolbar">
+                    <input type="text" id="userSearch" placeholder="Search users..." class="search-input">
+                </div>
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Joined</th>
+                            <th>Last Login</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Chats Tab -->
+        <div id="chats-tab" class="tab-content">
+            <div class="content-card">
+                <table id="chatsTable">
+                    <thead>
+                        <tr>
+                            <th>Session ID</th>
+                            <th>Started</th>
+                            <th>Messages</th>
+                            <th>Last Activity</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Stores Tab -->
+        <div id="stores-tab" class="tab-content">
+            <div class="content-card">
+                <button class="btn-primary" onclick="openStoreModal()">+ Add New Store</button>
+                <table id="storesTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Floor</th>
+                            <th>Unit</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Offers Tab -->
+        <div id="offers-tab" class="tab-content">
+            <div class="content-card">
+                <button class="btn-primary" onclick="openOfferModal()">+ Add New Offer</button>
+                <table id="offersTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Store</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Featured</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Events Tab -->
+        <div id="events-tab" class="tab-content">
+            <div class="content-card">
+                <button class="btn-primary" onclick="openEventModal()">+ Add New Event</button>
+                <table id="eventsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Facilities Tab -->
+        <div id="facilities-tab" class="tab-content">
+            <div class="content-card">
+                <button class="btn-primary" onclick="openFacilityModal()">+ Add New Facility</button>
+                <table id="facilitiesTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Feedback Tab -->
+        <div id="feedback-tab" class="tab-content">
+            <div class="content-card">
+                <table id="feedbackTable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Logs Tab -->
+        <div id="logs-tab" class="tab-content">
+            <div class="content-card">
+                <table id="logsTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Admin</th>
+                            <th>Action</th>
+                            <th>Entity</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab-content">
+            <div class="content-card settings-card">
+                <h3>Chatbot Configuration</h3>
+                <form id="settingsForm">
+                    <!-- Settings loaded dynamically -->
+                </form>
+                <button class="btn-primary" onclick="saveSettings()">Save Configuration</button>
+            </div>
+        </div>
+
+        <!-- AI Assistant Tab -->
+        <div id="ai-assistant-tab" class="tab-content">
+            <div class="content-card">
+                <h3>Admin AI BI Assistant</h3>
+                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Ask questions about visitor analytics, store performance, offer metrics, and retail demand signals.</p>
+                
+                <div class="chat-interface" style="display: flex; flex-direction: column; height: 500px; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: white;">
+                    <!-- Messages container -->
+                    <div id="aiChatMessages" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #fafafa;">
+                        <div style="background: #efe7f7; color: #333; padding: 12px 16px; border-radius: 12px; max-width: 80%; align-self: flex-start; line-height: 1.5; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                            Hello! I am your Business Intelligence Assistant. Ask me anything about MallBuddy's operations or analytics. E.g., "What category has the highest demand gap?" or "Compare the active store performance."
+                        </div>
+                    </div>
+                    
+                    <!-- Chat input controls -->
+                    <div style="display: flex; border-top: 1px solid #e0e0e0; padding: 15px; gap: 10px; background: white;">
+                        <input type="text" id="aiChatInput" placeholder="Ask a business intelligence question..." style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s;" onkeydown="if(event.key === 'Enter') sendAdminAIChatMessage()">
+                        <button class="btn-primary" style="margin-bottom: 0; padding: 0 24px; display: flex; align-items: center; justify-content: center;" onclick="sendAdminAIChatMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Modal -->
+    <div id="storeModal" class="modal">
+        <div class="modal-content">
+            <h2 id="storeModalTitle">Add Store</h2>
+            <form id="storeForm">
+                <div class="form-group">
+                    <label class="form-label">Store Name</label>
+                    <input type="text" id="storeName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="storeCategory" class="form-select" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Floor</label>
+                    <input type="text" id="storeFloor" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Unit</label>
+                    <input type="text" id="storeUnit" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="storeDescription" class="form-textarea"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeStoreModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Offer Modal -->
+    <div id="offerModal" class="modal">
+        <div class="modal-content">
+            <h2 id="offerModalTitle">Add Offer</h2>
+            <form id="offerForm">
+                <div class="form-group">
+                    <label class="form-label">Title</label>
+                    <input type="text" id="offerTitle" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Store</label>
+                    <select id="offerStore" class="form-select" required></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="offerDescription" class="form-textarea" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" id="offerStartDate" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <input type="date" id="offerEndDate" class="form-input" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeOfferModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <h2 id="eventModalTitle">Add Event</h2>
+            <form id="eventForm">
+                <div class="form-group">
+                    <label class="form-label">Event Name</label>
+                    <input type="text" id="eventName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="eventDescription" class="form-textarea" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Event Date</label>
+                    <input type="datetime-local" id="eventDate" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" id="eventLocation" class="form-input" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeEventModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>

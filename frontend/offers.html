@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offers & Events - MallBuddy</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .offers-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .view-all-btn {
+            padding: 0.625rem 1.25rem;
+            background: #9B7BC7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-all-btn:hover {
+            background: #8A6AB8;
+        }
+
+        .offers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .offer-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .offer-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .offer-banner {
+            height: 150px;
+            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+        }
+
+        .offer-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #EF4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .offer-content {
+            padding: 1.5rem;
+        }
+
+        .offer-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .offer-store {
+            color: #9B7BC7;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .offer-description {
+            color: #6B7280;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .offer-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .offer-validity {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+
+        .offer-action {
+            padding: 0.5rem 1rem;
+            background: #9B7BC7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .offer-action:hover {
+            background: #8A6AB8;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid #9B7BC7;
+        }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .event-date {
+            display: inline-block;
+            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-description {
+            color: #6B7280;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .event-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6B7280;
+            font-size: 0.875rem;
+        }
+
+        .featured-section {
+            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            color: white;
+            text-align: center;
+        }
+
+        .featured-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .featured-subtitle {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .featured-cta {
+            padding: 1rem 2rem;
+            background: white;
+            color: #9B7BC7;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .featured-cta:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #6B7280;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+                <div class="logo-icon">
+                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 8px;">
+                </div>
+                <span class="logo-text">MallBuddy</span>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn" onclick="window.location.href='index.html'">
+                    <span class="nav-icon">🏠</span>
+                    Home
+                </button>
+                <button class="nav-btn" onclick="window.location.href='stores.html'">
+                    <span class="nav-icon">🏪</span>
+                    Stores
+                </button>
+                <button class="nav-btn" onclick="window.location.href='offers.html'">
+                    <span class="nav-icon">🎁</span>
+                    Offers
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="offers-container">
+        <div class="page-header">
+            <h1 class="page-title">🎁 Offers & Events</h1>
+            <p style="color: #6B7280;">Discover amazing deals and exciting events at Elements Mall</p>
+        </div>
+
+        <!-- Featured Section -->
+        <div class="featured-section">
+            <div class="featured-title">🔥 Weekend Special!</div>
+            <div class="featured-subtitle">Up to 50% off on selected stores</div>
+            <button class="featured-cta" onclick="scrollToOffers()">Explore Offers</button>
+        </div>
+
+        <!-- Current Offers Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Current Offers</h2>
+            </div>
+            <div class="offers-grid" id="offersGrid">
+                <div class="loading">Loading offers...</div>
+            </div>
+        </div>
+
+        <!-- Upcoming Events Section -->
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Upcoming Events</h2>
+            </div>
+            <div class="events-grid" id="eventsGrid">
+                <div class="loading">Loading events...</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="analytics-tracking.js"></script>
+    <script>
+        // BACKEND_URL is now provided by config.js
+        const BACKEND_URL = window.BACKEND_URL || 'http://localhost:5000';
+
+        // Load offers
+        async function loadOffers() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/offers/`);
+                const data = await response.json();
+                const offers = data.offers || [];
+                displayOffers(offers);
+            } catch (error) {
+                console.error('Error loading offers:', error);
+                document.getElementById('offersGrid').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #6B7280;">
+                        Unable to load offers. Please try again later.
+                    </div>
+                `;
+            }
+        }
+
+        // Display offers
+        function displayOffers(offers) {
+            const grid = document.getElementById('offersGrid');
+
+            if (offers.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #6B7280;">
+                        No active offers at the moment. Check back soon!
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = offers.map(offer => {
+                const endDate = new Date(offer.end_date);
+                const daysLeft = Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24));
+
+                return `
+                    <div class="offer-card" onclick="viewOffer(${offer.id})">
+                        <div class="offer-banner">
+                            ${offer.is_featured ? '<span class="offer-badge">FEATURED</span>' : ''}
+                            🎉
+                        </div>
+                        <div class="offer-content">
+                            <div class="offer-title">${offer.title}</div>
+                            <div class="offer-store">📍 ${offer.store_name || 'Multiple Stores'}</div>
+                            <div class="offer-description">${offer.description || 'Amazing deal available now!'}</div>
+                            <div class="offer-footer">
+                                <div class="offer-validity">
+                                    ${daysLeft > 0 ? `${daysLeft} days left` : 'Ending soon!'}
+                                </div>
+                                <button class="offer-action" onclick="event.stopPropagation(); claimOffer(${offer.id})">
+                                    Claim Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Load events
+        async function loadEvents() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/events/?mall_id=1`);
+                const data = await response.json();
+                const events = data.events || [];
+                displayEvents(events);
+            } catch (error) {
+                console.error('Error loading events:', error);
+                document.getElementById('eventsGrid').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #6B7280;">
+                        Unable to load events. Please try again later.
+                    </div>
+                `;
+            }
+        }
+
+        // Display events
+        function displayEvents(events) {
+            const grid = document.getElementById('eventsGrid');
+
+            if (events.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #6B7280;">
+                        No upcoming events. Stay tuned for exciting events!
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = events.map(event => {
+                const eventDate = new Date(event.event_date);
+                const formattedDate = eventDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+
+                return `
+                    <div class="event-card" onclick="viewEvent(${event.id})">
+                        <div class="event-date">📅 ${formattedDate}</div>
+                        <div class="event-name">${event.name}</div>
+                        <div class="event-description">${event.description || 'Join us for this exciting event!'}</div>
+                        <div class="event-location">
+                            <span>📍</span>
+                            <span>${event.location || 'Elements Mall'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // View offer details
+        function viewOffer(offerId) {
+            MallBuddyAnalytics.track('offer_view', { offer_id: offerId });
+            alert(`Viewing offer details - Feature coming soon!`);
+        }
+
+        // Claim offer
+        function claimOffer(offerId) {
+            MallBuddyAnalytics.track('offer_click', { offer_id: offerId });
+            alert(`Offer claimed! Show this at the store to redeem.`);
+        }
+
+        // View event details
+        function viewEvent(eventId) {
+            MallBuddyAnalytics.track('event_view', { event_id: eventId });
+            alert(`Event details - Feature coming soon!`);
+        }
+
+        // Scroll to offers
+        function scrollToOffers() {
+            document.getElementById('offersGrid').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize
+        loadOffers();
+        loadEvents();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+# Render Blueprint - MallBuddy Deployment Configuration
+# This file auto-configures both backend and frontend services
+
+services:
+  # Backend Flask API
+  - type: web
+    name: mallbuddy-backend
+    runtime: python
+    region: oregon
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false  # You'll set this manually in Render dashboard
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+    healthCheckPath: /health
+
+  # Frontend Static Site
+  - type: web
+    name: mallbuddy-frontend
+    runtime: static
+    region: oregon
+    rootDir: frontend
+    plan: free
+    buildCommand: ""
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600

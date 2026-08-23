@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mall Map - MallBuddy</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .map-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .map-header {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Navigation Mode Header */
+        .nav-mode-header {
+            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            color: white;
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(155, 123, 199, 0.3);
+        }
+
+        .nav-route-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-point {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-point-icon {
+            font-size: 1.5rem;
+        }
+
+        .nav-point-text {
+            font-weight: 600;
+        }
+
+        .nav-arrow {
+            font-size: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .nav-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-stat {
+            text-align: center;
+        }
+
+        .nav-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .nav-stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .btn-exit-nav {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-exit-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .map-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+
+        .floor-selector {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+
+        .floor-selector-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 1rem;
+        }
+
+        .floor-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .floor-btn {
+            padding: 1rem;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .floor-btn:hover {
+            border-color: #9B7BC7;
+            background: #FDF8FF;
+        }
+
+        .floor-btn.active {
+            background: linear-gradient(135deg, #B794D4, #E8A0B0);
+            color: white;
+            border-color: #9B7BC7;
+        }
+
+        .floor-btn.has-route {
+            border-color: #10B981;
+            position: relative;
+        }
+
+        .floor-btn.has-route::after {
+            content: "●";
+            position: absolute;
+            right: 1rem;
+            color: #10B981;
+        }
+
+        .floor-info {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+
+        .floor-btn.active .floor-info {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .map-display {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .map-floor-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 1.5rem;
+        }
+
+        /* SVG Map Container */
+        .map-svg-container {
+            background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            min-height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floor-map {
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+        }
+
+        /* SVG Styles */
+        .corridor {
+            fill: #E5E7EB;
+        }
+
+        .store-rect {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .store-rect:hover {
+            filter: brightness(1.1);
+        }
+
+        .store-rect.destination {
+            stroke: #10B981;
+            stroke-width: 4;
+            stroke-dasharray: 8, 4;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                stroke-opacity: 1;
+            }
+
+            50% {
+                stroke-opacity: 0.5;
+            }
+        }
+
+        .store-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            fill: white;
+            pointer-events: none;
+        }
+
+        .landmark-circle {
+            cursor: pointer;
+        }
+
+        .landmark-icon {
+            font-size: 20px;
+            pointer-events: none;
+        }
+
+        .start-marker {
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Route Path */
+        .route-path {
+            fill: none;
+            stroke: #9B7BC7;
+            stroke-width: 5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: drawPath 2s ease forwards;
+        }
+
+        @keyframes drawPath {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .route-path-glow {
+            fill: none;
+            stroke: rgba(155, 123, 199, 0.3);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Directions Panel */
+        .directions-panel {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .directions-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .directions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .direction-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #9B7BC7;
+        }
+
+        .direction-step.current {
+            background: linear-gradient(135deg, rgba(155, 123, 199, 0.1), rgba(232, 160, 176, 0.1));
+            border-left-color: #10B981;
+        }
+
+        .step-icon {
+            font-size: 1.25rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-text {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .step-detail {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 0.25rem;
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #F9FAFB;
+            border-radius: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        /* Stores List */
+        .stores-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .store-item {
+            padding: 1rem;
+            background: #F9FAFB;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .store-item:hover {
+            border-color: #9B7BC7;
+            background: white;
+        }
+
+        .store-item.destination {
+            border-color: #10B981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+        }
+
+        .store-item-name {
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .store-item-location {
+            font-size: 0.875rem;
+            color: #6B7280;
+        }
+
+        @media (max-width: 1024px) {
+            .map-content {
+                grid-template-columns: 1fr;
+            }
+
+            .floor-buttons {
+                flex-direction: row;
+                overflow-x: auto;
+            }
+
+            .floor-btn {
+                min-width: 150px;
+            }
+
+            .nav-mode-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .nav-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+                <div class="logo-icon">
+                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 8px;">
+                </div>
+                <span class="logo-text">MallBuddy</span>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn" onclick="window.location.href='index.html'">
+                    <span class="nav-icon">🏠</span>
+                    Home
+                </button>
+                <button class="nav-btn" onclick="window.location.href='stores.html'">
+                    <span class="nav-icon">🏪</span>
+                    Stores
+                </button>
+                <button class="nav-btn" onclick="window.location.href='map.html'">
+                    <span class="nav-icon">🗺️</span>
+                    Map
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="map-container">
+        <!-- Navigation Mode Header (shown when navigating) -->
+        <div class="nav-mode-header" id="navModeHeader" style="display: none;">
+            <div class="nav-route-info">
+                <div class="nav-point">
+                    <span class="nav-point-icon">📍</span>
+                    <span class="nav-point-text" id="navFromText">Main Entrance</span>
+                </div>
+                <span class="nav-arrow">→</span>
+                <div class="nav-point">
+                    <span class="nav-point-icon">🎯</span>
+                    <span class="nav-point-text" id="navToText">Adidas</span>
+                </div>
+            </div>
+            <div class="nav-stats">
+                <div class="nav-stat">
+                    <div class="nav-stat-value" id="navDistance">~2</div>
+                    <div class="nav-stat-label">min walk</div>
+                </div>
+                <div class="nav-stat">
+                    <div class="nav-stat-value" id="navFloors">1</div>
+                    <div class="nav-stat-label">floor(s)</div>
+                </div>
+            </div>
+            <button class="btn-exit-nav" onclick="exitNavigationMode()">✕ Exit Navigation</button>
+        </div>
+
+        <!-- Regular Header (shown when not navigating) -->
+        <div class="map-header" id="regularHeader">
+            <h1 class="map-title">🗺️ Interactive Mall Map</h1>
+            <p style="color: #6B7280;">Navigate through different floors and find your destination</p>
+        </div>
+
+        <div class="map-content">
+            <!-- Floor Selector -->
+            <div class="floor-selector">
+                <h2 class="floor-selector-title">Select Floor</h2>
+                <div class="floor-buttons" id="floorButtons">
+                    <!-- Floors will be loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Map Display -->
+            <div class="map-display">
+                <h2 class="map-floor-title" id="currentFloorTitle">Floor 1</h2>
+
+                <!-- SVG Map Container -->
+                <div class="map-svg-container">
+                    <svg id="floorMap" class="floor-map" viewBox="0 0 800 500">
+                        <!-- Floor content will be rendered here -->
+                    </svg>
+                </div>
+
+                <!-- Directions Panel (shown when navigating) -->
+                <div class="directions-panel" id="directionsPanel" style="display: none;">
+                    <h3 class="directions-title">📍 Step-by-Step Directions</h3>
+                    <div class="directions-list" id="directionsList">
+                        <!-- Directions will be added here -->
+                    </div>
+                </div>
+
+                <!-- Stores on Current Floor -->
+                <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;">Stores on this floor</h3>
+                <div class="stores-list" id="storesList">
+                    <!-- Stores will be loaded dynamically -->
+                </div>
+
+                <!-- Legend -->
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9B7BC7;"></div>
+                        <span>Stores</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #10B981;"></div>
+                        <span>Destination</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #EF4444;"></div>
+                        <span>Your Location</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #F97316;"></div>
+                        <span>Facilities</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Include floor layouts data -->
+    <script src="floor-layouts.js"></script>
+
+    <script src="config.js"></script>
+    <script src="analytics-tracking.js"></script>
+    <script>
+        // BACKEND_URL is now provided by config.js
+        const BACKEND_URL = window.BACKEND_URL || 'http://localhost:5000';
+        let currentFloor = '1';
+        let isNavigating = false;
+        let navigationRoute = null;
+        let fromLocation = null;
+        let toLocation = null;
+
+        // Parse URL parameters for navigation
+        function parseNavigationParams() {
+            const params = new URLSearchParams(window.location.search);
+            const from = params.get('from');
+            const to = params.get('to');
+
+            if (from && to) {
+                return { from, to };
+            }
+            return null;
+        }
+
+        // Initialize navigation mode
+        async function init() {
+            try {
+                // Fetch live store data
+                await fetchAndSyncStores();
+            } catch (error) {
+                console.error('Failed to sync stores:', error);
+            }
+
+            const params = parseNavigationParams();
+            loadFloorButtons(); // Load buttons after sync
+
+            if (params) {
+                initNavigationMode(params);
+            } else {
+                selectFloor('1');
+            }
+        }
+
+        // Fetch stores and update FLOOR_LAYOUTS
+        async function fetchAndSyncStores() {
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/admin/stores`);
+                const data = await response.json();
+                const liveStores = data.stores;
+
+                // Color palette based on category names (simple heuristic)
+                const categoryColors = {
+                    'Fashion': '#6366F1',
+                    'Electronics': '#3B82F6',
+                    'Food': '#F97316',
+                    'Entertainment': '#EC4899',
+                    'Health': '#10B981',
+                    'Other': '#6B7280'
+                };
+
+                // Iterate through all floors in layout
+                Object.keys(FLOOR_LAYOUTS).forEach(floorKey => {
+                    const layout = FLOOR_LAYOUTS[floorKey];
+
+                    // Update stores in layout
+                    layout.stores.forEach(layoutStore => {
+                        // Find matching live store by unit
+                        // Normalize unit numbers (handle distinct formats e.g. "101" vs "Unit 101")
+                        const match = liveStores.find(s =>
+                            s.unit && s.unit.toString().trim() === layoutStore.unit.toString().trim()
+                        );
+
+                        if (match) {
+                            layoutStore.name = match.name;
+                            layoutStore.id = match.id; // Update ID to match DB
+                            // Set color based on category name
+                            const catName = match.category_name || 'Other';
+                            // Simple substring match for category colors
+                            let color = '#6B7280';
+                            if (/fashion|clothing/i.test(catName)) color = categoryColors.Fashion;
+                            else if (/electronic|digital/i.test(catName)) color = categoryColors.Electronics;
+                            else if (/food|cafe|restaurant/i.test(catName)) color = categoryColors.Food;
+                            else if (/movie|cinema|game/i.test(catName)) color = categoryColors.Entertainment;
+                            else if (/health|pharmacy/i.test(catName)) color = categoryColors.Health;
+
+                            layoutStore.color = color;
+                        } else {
+                            // No store in this unit -> Vacant
+                            layoutStore.name = 'Vacant';
+                            layoutStore.color = '#E5E7EB'; // Gray for composed/vacant
+                            // Keep unit for reference
+                        }
+                    });
+                });
+
+                console.log('Map synchronized with live store data');
+
+            } catch (error) {
+                console.error('Error fetching stores:', error);
+            }
+        }
+
+        function initNavigationMode(params) {
+            isNavigating = true;
+
+            // Find starting point and destination
+            fromLocation = findStartingPoint(params.from);
+            toLocation = findStoreByName(params.to);
+
+            if (!fromLocation || !toLocation) {
+                console.error('Could not find navigation locations');
+                // Fallback to regular mode if nav invalid
+                document.getElementById('navModeHeader').style.display = 'none';
+                document.getElementById('regularHeader').style.display = 'block';
+                return;
+            }
+
+            // Calculate route
+            navigationRoute = calculateRoute(fromLocation, toLocation);
+
+            // Update UI
+            document.getElementById('navModeHeader').style.display = 'flex';
+            document.getElementById('regularHeader').style.display = 'none';
+            document.getElementById('directionsPanel').style.display = 'block';
+
+            // Update navigation header
+            document.getElementById('navFromText').textContent = fromLocation.name;
+            document.getElementById('navToText').textContent = toLocation.name;
+            document.getElementById('navDistance').textContent = `~${navigationRoute.estimatedTime}`;
+            document.getElementById('navFloors').textContent = navigationRoute.floors.length;
+
+            // Render directions
+            renderDirections(navigationRoute);
+
+            // Switch to the first floor of the route
+            if (navigationRoute.floors.length > 0) {
+                selectFloor(navigationRoute.floors[0].floor);
+            }
+
+            // Mark floors that have route
+            markRouteFloors();
+        }
+
+        // Exit navigation mode
+        function exitNavigationMode() {
+            isNavigating = false;
+            navigationRoute = null;
+            fromLocation = null;
+            toLocation = null;
+
+            // Update UI
+            document.getElementById('navModeHeader').style.display = 'none';
+            document.getElementById('regularHeader').style.display = 'block';
+            document.getElementById('directionsPanel').style.display = 'none';
+
+            // Clear URL params
+            window.history.replaceState({}, '', 'map.html');
+
+            // Remove route floor markers
+            document.querySelectorAll('.floor-btn').forEach(btn => {
+                btn.classList.remove('has-route');
+            });
+
+            // Re-render current floor
+            renderFloor(currentFloor);
+        }
+
+        // Mark floors that are part of the route
+        function markRouteFloors() {
+            if (!navigationRoute) return;
+
+            const routeFloors = navigationRoute.floors.map(f => f.floor);
+            document.querySelectorAll('.floor-btn').forEach(btn => {
+                if (routeFloors.includes(btn.dataset.floor)) {
+                    btn.classList.add('has-route');
+                }
+            });
+        }
+
+        // Render directions panel
+        function renderDirections(route) {
+            const directionsList = document.getElementById('directionsList');
+            const steps = getDirectionsText(route);
+
+            directionsList.innerHTML = steps.map((step, index) => `
+                <div class="direction-step ${index === 0 ? 'current' : ''}">
+                    <span class="step-icon">${step.icon}</span>
+                    <div class="step-content">
+                        <div class="step-text">${step.text}</div>
+                        ${step.detail ? `<div class="step-detail">${step.detail}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load floor buttons
+        function loadFloorButtons() {
+            const floorButtons = document.getElementById('floorButtons');
+            const floors = Object.keys(FLOOR_LAYOUTS).sort((a, b) => {
+                // Sort: B1 first, then numeric
+                if (a === 'B1') return -1;
+                if (b === 'B1') return 1;
+                return parseInt(a) - parseInt(b);
+            });
+
+            floorButtons.innerHTML = floors.map((floor, index) => {
+                const layout = FLOOR_LAYOUTS[floor];
+                const storeCount = layout.stores.length;
+                return `
+                    <button class="floor-btn ${floor === '1' ? 'active' : ''}" 
+                            onclick="selectFloor('${floor}')" 
+                            data-floor="${floor}">
+                        <div>${floor === 'B1' ? 'Basement (B1)' : `Floor ${floor}`}</div>
+                        <div class="floor-info">${storeCount} store${storeCount !== 1 ? 's' : ''}</div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // Select floor
+        function selectFloor(floor) {
+            currentFloor = floor;
+
+            // Update active button
+            document.querySelectorAll('.floor-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.floor === floor) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update title
+            const layout = FLOOR_LAYOUTS[floor];
+            document.getElementById('currentFloorTitle').textContent = layout ? layout.name : `Floor ${floor}`;
+
+            // Render floor
+            renderFloor(floor);
+
+            // Update stores list
+            renderStoresList(floor);
+        }
+
+        // Render SVG floor map
+        function renderFloor(floor) {
+            const svg = document.getElementById('floorMap');
+            const layout = FLOOR_LAYOUTS[floor];
+
+            if (!layout) {
+                svg.innerHTML = `
+                    <text x="400" y="250" text-anchor="middle" font-family="Inter" font-size="16" fill="#6B7280">
+                        Floor layout not available
+                    </text>
+                `;
+                return;
+            }
+
+            let svgContent = '';
+
+            // Background
+            svgContent += `<rect width="800" height="500" fill="${layout.background}" rx="8"/>`;
+
+            // Corridors
+            layout.corridors.forEach(corridor => {
+                svgContent += `
+                    <rect x="${corridor.x}" y="${corridor.y}" 
+                          width="${corridor.width}" height="${corridor.height}" 
+                          class="corridor" rx="4"/>
+                `;
+            });
+
+            // Stores
+            layout.stores.forEach(store => {
+                const isDestination = isNavigating && toLocation &&
+                    store.name.toLowerCase() === toLocation.name.toLowerCase();
+                svgContent += `
+                    <g onclick="highlightStore('${store.name}')">
+                        <rect x="${store.x}" y="${store.y}" 
+                              width="${store.width}" height="${store.height}" 
+                              fill="${store.color}" 
+                              class="store-rect ${isDestination ? 'destination' : ''}" 
+                              rx="8"/>
+                        <text x="${store.x + store.width / 2}" y="${store.y + store.height / 2 + 5}" 
+                              text-anchor="middle" class="store-label">${store.name}</text>
+                    </g>
+                `;
+            });
+
+            // Landmarks
+            layout.landmarks.forEach(landmark => {
+                svgContent += `
+                    <g onclick="highlightStore('${landmark.name}')">
+                        <circle cx="${landmark.x}" cy="${landmark.y}" r="25" 
+                                fill="#F97316" class="landmark-circle"/>
+                        <text x="${landmark.x}" y="${landmark.y + 7}" 
+                              text-anchor="middle" class="landmark-icon">${landmark.icon}</text>
+                    </g>
+                `;
+            });
+
+            // Navigation path and markers
+            if (isNavigating && navigationRoute) {
+                const floorRoute = navigationRoute.floors.find(f => f.floor === floor);
+
+                if (floorRoute && floorRoute.path.length > 1) {
+                    const pathData = generateSVGPath(floorRoute.path);
+
+                    // Glow effect
+                    svgContent += `<path d="${pathData}" class="route-path-glow"/>`;
+                    // Main path
+                    svgContent += `<path d="${pathData}" class="route-path"/>`;
+                }
+
+                // Start marker (if on this floor)
+                if (fromLocation && fromLocation.floor === floor) {
+                    const center = getLocationCenter(fromLocation);
+                    svgContent += `
+                        <g class="start-marker">
+                            <circle cx="${center.x}" cy="${center.y}" r="18" fill="#EF4444"/>
+                            <text x="${center.x}" y="${center.y + 6}" 
+                                  text-anchor="middle" fill="white" font-size="18">📍</text>
+                        </g>
+                    `;
+                }
+
+                // End marker (if on this floor)
+                if (toLocation && toLocation.floor === floor) {
+                    const center = getLocationCenter(toLocation);
+                    svgContent += `
+                        <g>
+                            <circle cx="${center.x + toLocation.width / 2 + 15}" cy="${center.y - 10}" 
+                                    r="15" fill="#10B981"/>
+                            <text x="${center.x + toLocation.width / 2 + 15}" y="${center.y - 5}" 
+                                  text-anchor="middle" fill="white" font-size="14">🎯</text>
+                        </g>
+                    `;
+                }
+            }
+
+            svg.innerHTML = svgContent;
+        }
+
+        // Render stores list below map
+        function renderStoresList(floor) {
+            const storesList = document.getElementById('storesList');
+            const layout = FLOOR_LAYOUTS[floor];
+
+            if (!layout) {
+                storesList.innerHTML = '<div style="color: #6B7280;">No stores data available</div>';
+                return;
+            }
+
+            const allItems = [
+                ...layout.stores.map(s => ({ ...s, type: 'store' })),
+                ...layout.landmarks.map(l => ({ ...l, type: 'facility' }))
+            ];
+
+            if (allItems.length === 0) {
+                storesList.innerHTML = '<div style="color: #6B7280;">No stores on this floor</div>';
+                return;
+            }
+
+            storesList.innerHTML = allItems.map(item => {
+                const isDestination = isNavigating && toLocation &&
+                    item.name.toLowerCase() === toLocation.name.toLowerCase();
+                return `
+                    <div class="store-item ${isDestination ? 'destination' : ''}" 
+                         onclick="highlightStore('${item.name}')">
+                        <div class="store-item-name">
+                            ${item.type === 'facility' ? item.icon : '🏪'} ${item.name}
+                        </div>
+                        <div class="store-item-location">
+                            ${item.unit ? `Unit ${item.unit}` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Highlight store on map
+        function highlightStore(name) {
+            console.log('Highlighting:', name);
+            // Could add visual highlight effect here
+        }
+
+        // Get location center helper
+        function getLocationCenter(location) {
+            if (location.width && location.height) {
+                return {
+                    x: location.x + location.width / 2,
+                    y: location.y + location.height / 2
+                };
+            }
+            return { x: location.x, y: location.y };
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+        });
+    </script>
+</body>
+
+</html>

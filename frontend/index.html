@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MallBuddy - Your Intelligent Shopping Mall Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo" onclick="window.location.href='index.html'" style="cursor: pointer;">
+                <div class="logo-icon">
+                    <img src="logo.png" alt="MallBuddy Logo" style="width: 40px; height: 40px; border-radius: 8px;">
+                </div>
+                <span class="logo-text">MallBuddy(Elements Mall)</span>
+            </div>
+            <nav class="nav-menu" id="navMenu">
+                <button class="nav-btn" onclick="window.location.href='stores.html'">
+                    <span class="nav-icon">🏪</span>
+                    Stores
+                </button>
+                <button class="nav-btn" onclick="window.location.href='map.html'">
+                    <span class="nav-icon">🗺️</span>
+                    Mall Map
+                </button>
+                <button class="nav-btn" onclick="window.location.href='offers.html'">
+                    <span class="nav-icon">🎁</span>
+                    Offers
+                </button>
+                <button class="btn-login" onclick="navigateTo('login')" id="loginBtn">Login</button>
+                <button class="btn-signup" onclick="navigateTo('signup')" id="signupBtn">Sign Up</button>
+                <span id="userInfo" style="display: none; color: white; margin-right: 10px;"></span>
+                <button class="btn-logout" onclick="logout()" id="logoutBtn" style="display: none;">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Welcome Card -->
+            <div class="welcome-card" id="welcomeCard">
+                <div class="welcome-header">
+                    <span class="robot-emoji">🤖</span>
+                    <h1 class="welcome-title" id="welcomeTitle">Welcome to MallBuddy!</h1>
+                </div>
+                <p class="welcome-subtitle" id="welcomeSubtitle">Your intelligent shopping mall assistant for stores,
+                    offers, and navigation
+                </p>
+
+                <!-- Quick Actions Section -->
+                <div class="quick-actions-section">
+                    <h2 class="section-title">How can I help you today?</h2>
+                    <p class="section-subtitle">Ask me about store locations, current offers, directions, or general
+                        mall information</p>
+
+                    <div class="quick-actions-grid">
+                        <button class="action-card" onclick="sendQuickQuestion('What offers are available today?')">
+                            <span class="action-icon">🔥</span>
+                            <span class="action-text">What offers are available today?</span>
+                        </button>
+
+                        <button class="action-card" onclick="sendQuickQuestion('Where is Adidas located?')">
+                            <span class="action-icon">📍</span>
+                            <span class="action-text">Where is Adidas located?</span>
+                        </button>
+
+                        <button class="action-card"
+                            onclick="sendQuickQuestion('How do I reach PVR from the main entrance?')">
+                            <span class="action-icon">�️</span>
+                            <span class="action-text">How do I reach PVR from the main entrance?</span>
+                        </button>
+
+                        <button class="action-card" onclick="sendQuickQuestion('What are the mall timings?')">
+                            <span class="action-icon">🕐</span>
+                            <span class="action-text">What are the mall timings?</span>
+                        </button>
+
+                        <button class="action-card" onclick="sendQuickQuestion('Show me fashion stores')">
+                            <span class="action-icon">�</span>
+                            <span class="action-text">Show me fashion stores</span>
+                        </button>
+
+                        <button class="action-card" onclick="sendQuickQuestion('Where is the food court?')">
+                            <span class="action-icon">�</span>
+                            <span class="action-text">Where is the food court?</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages Area (Hidden Initially) -->
+            <div class="chat-messages-container" id="chatMessagesContainer" style="display: none;">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+            </div>
+
+            <!-- Chat Input (Fixed at Bottom) -->
+            <div class="chat-input-section">
+                <div class="chat-input-wrapper">
+                    <input type="text" class="chat-input" id="chatInput"
+                        placeholder="Ask me about stores, offers, or directions..."
+                        onkeypress="handleKeyPress(event)" />
+                    <button class="send-button" onclick="sendMessage()" id="sendBtn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M18 2L9 11M18 2L12 18L9 11M18 2L2 8L9 11" stroke="white" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="analytics-tracking.js"></script>
+    <script src="script.js?v=2"></script>
+</body>
+
+</html>
