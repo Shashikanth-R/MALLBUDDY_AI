@@ -17,15 +17,15 @@ class GeminiChatbotService:
         self.client = None
         
         if not self.api_key:
-            print("⚠️ WARNING: GEMINI_API_KEY not found. Chatbot will run in fallback mode.")
+            print("[WARNING] GEMINI_API_KEY not found. Chatbot will run in fallback mode.")
             # Do not raise error to prevent app crash
         else:
             try:
                 # Configure Gemini client with new SDK
                 self.client = genai.Client(api_key=self.api_key)
-                print("✅ Gemini Chatbot Service initialized successfully")
+                print("[SUCCESS] Gemini Chatbot Service initialized successfully")
             except Exception as e:
-                print(f"❌ Failed to initialize Gemini client: {e}")
+                print(f"[ERROR] Failed to initialize Gemini client: {e}")
         
         # Model name
         self.model_name = 'models/gemini-3.6-flash'

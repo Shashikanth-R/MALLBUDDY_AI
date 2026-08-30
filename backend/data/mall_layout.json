@@ -1,0 +1,387 @@
+{
+  "FLOOR_LAYOUTS": {
+    "1": {
+      "name": "Floor 1 - Fashion & Lifestyle",
+      "width": 800,
+      "height": 500,
+      "background": "#F9FAFB",
+      "stores": [
+        {
+          "id": 1,
+          "name": "Zara",
+          "unit": "105",
+          "x": 80,
+          "y": 80,
+          "width": 100,
+          "height": 70,
+          "color": "#6366F1"
+        },
+        {
+          "id": 2,
+          "name": "H&M",
+          "unit": "110",
+          "x": 200,
+          "y": 80,
+          "width": 100,
+          "height": 70,
+          "color": "#8B5CF6"
+        },
+        {
+          "id": 3,
+          "name": "Starbucks",
+          "unit": "115",
+          "x": 320,
+          "y": 80,
+          "width": 100,
+          "height": 70,
+          "color": "#10B981"
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "Main Entrance",
+          "x": 400,
+          "y": 450,
+          "type": "entrance",
+          "icon": "🚪"
+        },
+        {
+          "name": "Escalator to Floor 2",
+          "x": 700,
+          "y": 250,
+          "type": "escalator",
+          "icon": "↗️"
+        },
+        {
+          "name": "Washroom",
+          "unit": "101",
+          "x": 80,
+          "y": 380,
+          "type": "facility",
+          "icon": "🚻"
+        },
+        {
+          "name": "ATM - HDFC",
+          "unit": "102",
+          "x": 200,
+          "y": 380,
+          "type": "facility",
+          "icon": "🏧"
+        }
+      ],
+      "corridors": [
+        {
+          "x": 50,
+          "y": 180,
+          "width": 700,
+          "height": 60
+        },
+        {
+          "x": 370,
+          "y": 240,
+          "width": 60,
+          "height": 220
+        }
+      ]
+    },
+    "2": {
+      "name": "Floor 2 - Sports & Electronics",
+      "width": 800,
+      "height": 500,
+      "background": "#F9FAFB",
+      "stores": [
+        {
+          "id": 4,
+          "name": "Adidas",
+          "unit": "205",
+          "x": 80,
+          "y": 80,
+          "width": 100,
+          "height": 70,
+          "color": "#EF4444"
+        },
+        {
+          "id": 5,
+          "name": "Nike",
+          "unit": "210",
+          "x": 200,
+          "y": 80,
+          "width": 100,
+          "height": 70,
+          "color": "#F97316"
+        },
+        {
+          "id": 6,
+          "name": "Electronics Store",
+          "unit": "215",
+          "x": 320,
+          "y": 80,
+          "width": 120,
+          "height": 70,
+          "color": "#3B82F6"
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "Escalator from Floor 1",
+          "x": 700,
+          "y": 250,
+          "type": "escalator",
+          "icon": "↙️"
+        },
+        {
+          "name": "Escalator to Floor 3",
+          "x": 700,
+          "y": 150,
+          "type": "escalator",
+          "icon": "↗️"
+        },
+        {
+          "name": "Washroom",
+          "unit": "201",
+          "x": 80,
+          "y": 380,
+          "type": "facility",
+          "icon": "🚻"
+        }
+      ],
+      "corridors": [
+        {
+          "x": 50,
+          "y": 180,
+          "width": 700,
+          "height": 60
+        },
+        {
+          "x": 650,
+          "y": 140,
+          "width": 60,
+          "height": 180
+        }
+      ]
+    },
+    "3": {
+      "name": "Floor 3 - Food Court",
+      "width": 800,
+      "height": 500,
+      "background": "#F9FAFB",
+      "stores": [
+        {
+          "id": 7,
+          "name": "McDonald's",
+          "unit": "301",
+          "x": 80,
+          "y": 80,
+          "width": 100,
+          "height": 70,
+          "color": "#FBBF24"
+        },
+        {
+          "id": 8,
+          "name": "Pizza Hut",
+          "unit": "305",
+          "x": 200,
+          "y": 80,
+          "width": 100,
+          "height": 70,
+          "color": "#EF4444"
+        },
+        {
+          "id": 9,
+          "name": "Food Court",
+          "unit": "300",
+          "x": 350,
+          "y": 80,
+          "width": 200,
+          "height": 120,
+          "color": "#F97316"
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "Escalator from Floor 2",
+          "x": 700,
+          "y": 250,
+          "type": "escalator",
+          "icon": "↙️"
+        },
+        {
+          "name": "Escalator to Floor 4",
+          "x": 700,
+          "y": 150,
+          "type": "escalator",
+          "icon": "↗️"
+        }
+      ],
+      "corridors": [
+        {
+          "x": 50,
+          "y": 220,
+          "width": 700,
+          "height": 60
+        }
+      ]
+    },
+    "4": {
+      "name": "Floor 4 - Entertainment",
+      "width": 800,
+      "height": 500,
+      "background": "#F9FAFB",
+      "stores": [
+        {
+          "id": 10,
+          "name": "PVR Cinemas",
+          "unit": "401",
+          "x": 100,
+          "y": 60,
+          "width": 250,
+          "height": 120,
+          "color": "#7C3AED"
+        },
+        {
+          "id": 11,
+          "name": "Gaming Zone",
+          "unit": "410",
+          "x": 400,
+          "y": 60,
+          "width": 150,
+          "height": 100,
+          "color": "#EC4899"
+        }
+      ],
+      "landmarks": [
+        {
+          "name": "Escalator from Floor 3",
+          "x": 700,
+          "y": 250,
+          "type": "escalator",
+          "icon": "↙️"
+        }
+      ],
+      "corridors": [
+        {
+          "x": 50,
+          "y": 200,
+          "width": 700,
+          "height": 60
+        }
+      ]
+    },
+    "B1": {
+      "name": "Basement - Parking",
+      "width": 800,
+      "height": 500,
+      "background": "#E5E7EB",
+      "stores": [],
+      "landmarks": [
+        {
+          "name": "Parking Area",
+          "unit": "P1",
+          "x": 400,
+          "y": 250,
+          "type": "parking",
+          "icon": "🅿️"
+        },
+        {
+          "name": "Elevator to Floor 1",
+          "x": 700,
+          "y": 250,
+          "type": "elevator",
+          "icon": "🛗"
+        }
+      ],
+      "corridors": [
+        {
+          "x": 50,
+          "y": 220,
+          "width": 700,
+          "height": 60
+        }
+      ]
+    }
+  },
+  "STARTING_POINTS": [
+    {
+      "id": "main_entrance",
+      "name": "Main Entrance",
+      "floor": "1",
+      "x": 400,
+      "y": 450,
+      "icon": "🚪"
+    },
+    {
+      "id": "parking",
+      "name": "Parking Area (B1)",
+      "floor": "B1",
+      "x": 400,
+      "y": 250,
+      "icon": "🅿️"
+    },
+    {
+      "id": "food_court",
+      "name": "Food Court (Floor 3)",
+      "floor": "3",
+      "x": 400,
+      "y": 140,
+      "icon": "🍔"
+    },
+    {
+      "id": "escalator_f1",
+      "name": "Escalator - Floor 1",
+      "floor": "1",
+      "x": 700,
+      "y": 250,
+      "icon": "↗️"
+    },
+    {
+      "id": "escalator_f2",
+      "name": "Escalator - Floor 2",
+      "floor": "2",
+      "x": 700,
+      "y": 250,
+      "icon": "↕️"
+    }
+  ],
+  "FLOOR_CONNECTIONS": {
+    "1": {
+      "up": "2",
+      "down": "B1",
+      "connectionPoint": {
+        "x": 700,
+        "y": 250
+      }
+    },
+    "2": {
+      "up": "3",
+      "down": "1",
+      "connectionPoint": {
+        "x": 700,
+        "y": 250
+      }
+    },
+    "3": {
+      "up": "4",
+      "down": "2",
+      "connectionPoint": {
+        "x": 700,
+        "y": 250
+      }
+    },
+    "4": {
+      "up": null,
+      "down": "3",
+      "connectionPoint": {
+        "x": 700,
+        "y": 250
+      }
+    },
+    "B1": {
+      "up": "1",
+      "down": null,
+      "connectionPoint": {
+        "x": 700,
+        "y": 250
+      }
+    }
+  }
+}

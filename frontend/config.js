@@ -9,7 +9,7 @@
 
     // Set this to true to use the live Render backend even when running locally
     // Set to false to use your local Flask server (http://localhost:5000)
-    const USE_LIVE_BACKEND = true;
+    const USE_LIVE_BACKEND = false;
 
     if (USE_LIVE_BACKEND || hostname.includes('onrender.com')) {
         // Production on Render

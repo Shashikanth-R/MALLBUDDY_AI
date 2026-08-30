@@ -597,17 +597,20 @@
         // Initialize navigation mode
         async function init() {
             try {
+                // Fetch mall layout from backend first
+                await fetchMallLayout();
+                
                 // Fetch live store data
                 await fetchAndSyncStores();
             } catch (error) {
-                console.error('Failed to sync stores:', error);
+                console.error('Failed to init:', error);
             }
 
             const params = parseNavigationParams();
             loadFloorButtons(); // Load buttons after sync
 
             if (params) {
-                initNavigationMode(params);
+                await initNavigationMode(params);
             } else {
                 selectFloor('1');
             }
@@ -672,7 +675,7 @@
             }
         }
 
-        function initNavigationMode(params) {
+        async function initNavigationMode(params) {
             isNavigating = true;
 
             // Find starting point and destination
@@ -688,7 +691,7 @@
             }
 
             // Calculate route
-            navigationRoute = calculateRoute(fromLocation, toLocation);
+            navigationRoute = await calculateRoute(fromLocation, toLocation);
 
             // Update UI
             document.getElementById('navModeHeader').style.display = 'flex';

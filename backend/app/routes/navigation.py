@@ -5,10 +5,34 @@ from app.models import Route, Store, Facility
 bp = Blueprint('navigation', __name__, url_prefix='/api/navigation')
 
 
+import os
+import json
+from app.services.navigation.astar import NavigationGraph, get_layout_data, calculate_astar_route
+
+# Initialize graph lazily
+_navigation_graph = None
+
+def get_graph():
+    global _navigation_graph
+    if _navigation_graph is None:
+        _navigation_graph = NavigationGraph(get_layout_data())
+    return _navigation_graph
+
 def calculate_route(from_location, to_location, mall_id=1):
     """Calculate route between two locations with intelligent pathfinding"""
     
-    # Try to find direct route
+    # 1. Try A* Pathfinding first
+    try:
+        graph = get_graph()
+        astar_route = calculate_astar_route(graph, from_location, to_location)
+        if astar_route:
+            return astar_route
+    except Exception as e:
+        print(f"A* Pathfinding failed: {e}")
+        # Fallback to existing logic if A* fails
+        pass
+        
+    # 2. Try to find direct route in DB
     route = Route.query.filter_by(
         mall_id=mall_id,
         from_location=from_location,
@@ -56,6 +80,14 @@ def calculate_route(from_location, to_location, mall_id=1):
         }
     
     return None
+
+@bp.route('/layout', methods=['GET'])
+def get_layout():
+    """Return the canonical mall layout JSON"""
+    try:
+        return jsonify(get_layout_data()), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 @bp.route('/', methods=['GET'])

@@ -29,11 +29,11 @@ class MyHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     with socketserver.TCPServer(("", PORT), MyHTTPRequestHandler) as httpd:
-        print(f"✅ MallBuddy Frontend Server")
-        print(f"🌐 Serving at: http://localhost:{PORT}")
-        print(f"📁 Directory: {DIRECTORY}")
-        print(f"\n🚀 Open http://localhost:{PORT} in your browser")
-        print(f"⏹️  Press Ctrl+C to stop\n")
+        print(f"[SUCCESS] MallBuddy Frontend Server")
+        print(f"Serving at: http://localhost:{PORT}")
+        print(f"Directory: {DIRECTORY}")
+        print(f"\nOpen http://localhost:{PORT} in your browser")
+        print(f"[STOP]  Press Ctrl+C to stop\n")
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:

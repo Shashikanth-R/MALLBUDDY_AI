@@ -3,127 +3,27 @@
  * Contains store coordinates, landmarks, and pathfinding logic
  */
 
-// Floor layout configurations
-const FLOOR_LAYOUTS = {
-    // Floor 1 - Fashion & Lifestyle
-    "1": {
-        name: "Floor 1 - Fashion & Lifestyle",
-        width: 800,
-        height: 500,
-        background: "#F9FAFB",
-        stores: [
-            { id: 1, name: "Zara", unit: "105", x: 80, y: 80, width: 100, height: 70, color: "#6366F1" },
-            { id: 2, name: "H&M", unit: "110", x: 200, y: 80, width: 100, height: 70, color: "#8B5CF6" },
-            { id: 3, name: "Starbucks", unit: "115", x: 320, y: 80, width: 100, height: 70, color: "#10B981" }
-        ],
-        landmarks: [
-            { name: "Main Entrance", x: 400, y: 450, type: "entrance", icon: "🚪" },
-            { name: "Escalator to Floor 2", x: 700, y: 250, type: "escalator", icon: "↗️" },
-            { name: "Washroom", unit: "101", x: 80, y: 380, type: "facility", icon: "🚻" },
-            { name: "ATM - HDFC", unit: "102", x: 200, y: 380, type: "facility", icon: "🏧" }
-        ],
-        corridors: [
-            // Main horizontal corridor
-            { x: 50, y: 180, width: 700, height: 60 },
-            // Vertical corridor to entrance
-            { x: 370, y: 240, width: 60, height: 220 }
-        ]
-    },
+// Data structures for mall layout, to be populated from backend
+let FLOOR_LAYOUTS = {};
+let STARTING_POINTS = [];
+let FLOOR_CONNECTIONS = {};
 
-    // Floor 2 - Sports & Electronics
-    "2": {
-        name: "Floor 2 - Sports & Electronics",
-        width: 800,
-        height: 500,
-        background: "#F9FAFB",
-        stores: [
-            { id: 4, name: "Adidas", unit: "205", x: 80, y: 80, width: 100, height: 70, color: "#EF4444" },
-            { id: 5, name: "Nike", unit: "210", x: 200, y: 80, width: 100, height: 70, color: "#F97316" },
-            { id: 6, name: "Electronics Store", unit: "215", x: 320, y: 80, width: 120, height: 70, color: "#3B82F6" }
-        ],
-        landmarks: [
-            { name: "Escalator from Floor 1", x: 700, y: 250, type: "escalator", icon: "↙️" },
-            { name: "Escalator to Floor 3", x: 700, y: 150, type: "escalator", icon: "↗️" },
-            { name: "Washroom", unit: "201", x: 80, y: 380, type: "facility", icon: "🚻" }
-        ],
-        corridors: [
-            { x: 50, y: 180, width: 700, height: 60 },
-            { x: 650, y: 140, width: 60, height: 180 }
-        ]
-    },
+const backendUrl = window.BACKEND_URL || 'http://localhost:5000';
 
-    // Floor 3 - Food Court
-    "3": {
-        name: "Floor 3 - Food Court",
-        width: 800,
-        height: 500,
-        background: "#F9FAFB",
-        stores: [
-            { id: 7, name: "McDonald's", unit: "301", x: 80, y: 80, width: 100, height: 70, color: "#FBBF24" },
-            { id: 8, name: "Pizza Hut", unit: "305", x: 200, y: 80, width: 100, height: 70, color: "#EF4444" },
-            { id: 9, name: "Food Court", unit: "300", x: 350, y: 80, width: 200, height: 120, color: "#F97316" }
-        ],
-        landmarks: [
-            { name: "Escalator from Floor 2", x: 700, y: 250, type: "escalator", icon: "↙️" },
-            { name: "Escalator to Floor 4", x: 700, y: 150, type: "escalator", icon: "↗️" }
-        ],
-        corridors: [
-            { x: 50, y: 220, width: 700, height: 60 }
-        ]
-    },
-
-    // Floor 4 - Entertainment
-    "4": {
-        name: "Floor 4 - Entertainment",
-        width: 800,
-        height: 500,
-        background: "#F9FAFB",
-        stores: [
-            { id: 10, name: "PVR Cinemas", unit: "401", x: 100, y: 60, width: 250, height: 120, color: "#7C3AED" },
-            { id: 11, name: "Gaming Zone", unit: "410", x: 400, y: 60, width: 150, height: 100, color: "#EC4899" }
-        ],
-        landmarks: [
-            { name: "Escalator from Floor 3", x: 700, y: 250, type: "escalator", icon: "↙️" }
-        ],
-        corridors: [
-            { x: 50, y: 200, width: 700, height: 60 }
-        ]
-    },
-
-    // Basement - Parking
-    "B1": {
-        name: "Basement - Parking",
-        width: 800,
-        height: 500,
-        background: "#E5E7EB",
-        stores: [],
-        landmarks: [
-            { name: "Parking Area", unit: "P1", x: 400, y: 250, type: "parking", icon: "🅿️" },
-            { name: "Elevator to Floor 1", x: 700, y: 250, type: "elevator", icon: "🛗" }
-        ],
-        corridors: [
-            { x: 50, y: 220, width: 700, height: 60 }
-        ]
+async function fetchMallLayout() {
+    try {
+        const response = await fetch(`${backendUrl}/api/navigation/layout`);
+        if (!response.ok) throw new Error('Failed to fetch layout');
+        const layoutData = await response.json();
+        
+        FLOOR_LAYOUTS = layoutData.FLOOR_LAYOUTS || {};
+        STARTING_POINTS = layoutData.STARTING_POINTS || [];
+        FLOOR_CONNECTIONS = layoutData.FLOOR_CONNECTIONS || {};
+        console.log("Loaded mall layout from backend");
+    } catch (error) {
+        console.error("Error fetching mall layout:", error);
     }
-};
-
-// Starting point options
-const STARTING_POINTS = [
-    { id: "main_entrance", name: "Main Entrance", floor: "1", x: 400, y: 450, icon: "🚪" },
-    { id: "parking", name: "Parking Area (B1)", floor: "B1", x: 400, y: 250, icon: "🅿️" },
-    { id: "food_court", name: "Food Court (Floor 3)", floor: "3", x: 400, y: 140, icon: "🍔" },
-    { id: "escalator_f1", name: "Escalator - Floor 1", floor: "1", x: 700, y: 250, icon: "↗️" },
-    { id: "escalator_f2", name: "Escalator - Floor 2", floor: "2", x: 700, y: 250, icon: "↕️" }
-];
-
-// Floor connections (escalators, elevators)
-const FLOOR_CONNECTIONS = {
-    "B1": { up: "1", down: null, connectionPoint: { x: 700, y: 250 } },
-    "1": { up: "2", down: "B1", connectionPoint: { x: 700, y: 250 } },
-    "2": { up: "3", down: "1", connectionPoint: { x: 700, y: 250 } },
-    "3": { up: "4", down: "2", connectionPoint: { x: 700, y: 250 } },
-    "4": { up: null, down: "3", connectionPoint: { x: 700, y: 250 } }
-};
+}
 
 /**
  * Find a store by name across all floors
@@ -171,9 +71,38 @@ function getLocationCenter(location) {
 }
 
 /**
- * Calculate route between two locations
+ * Calculate route using backend A* service with local fallback
  */
-function calculateRoute(fromLocation, toLocation) {
+async function calculateRoute(fromLocation, toLocation) {
+    try {
+        const fromName = encodeURIComponent(fromLocation.name || fromLocation.id);
+        const toName = encodeURIComponent(toLocation.name || toLocation.id);
+        const response = await fetch(`${backendUrl}/api/navigation/?from=${fromName}&to=${toName}`);
+        
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        if (data.route) {
+            console.log("Using backend A* route");
+            // API compatibility formatting
+            const route = data.route;
+            if (!route.from.x) route.from = fromLocation;
+            if (!route.to.x) route.to = toLocation;
+            return route;
+        }
+        throw new Error("Route not found in API response");
+    } catch (err) {
+        console.warn("Falling back to local routing:", err);
+        return calculateRouteFallback(fromLocation, toLocation);
+    }
+}
+
+/**
+ * Calculate route between two locations locally (fallback)
+ */
+function calculateRouteFallback(fromLocation, toLocation) {
     const fromFloor = fromLocation.floor;
     const toFloor = toLocation.floor;
 
@@ -352,9 +281,10 @@ if (typeof module !== 'undefined' && module.exports) {
         STARTING_POINTS,
         FLOOR_CONNECTIONS,
         findStoreByName,
-        findStartingPoint,
+        calculateRouteFallback,
         calculateRoute,
         generateSVGPath,
-        getDirectionsText
+        getDirectionsText,
+        fetchMallLayout
     };
 }
