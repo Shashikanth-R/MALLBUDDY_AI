@@ -63,7 +63,12 @@
                 // Token is valid
                 if (isGuestOnly) {
                     // Active session, redirect away from login/signup
-                    window.location.replace('index.html');
+                    const userType = localStorage.getItem('userType');
+                    if (userType === 'admin') {
+                        window.location.replace('admin.html');
+                    } else {
+                        window.location.replace('index.html');
+                    }
                 } else {
                     // Valid session on protected or hybrid page. Apply user info if DOM is ready.
                     applyUserInfo();
@@ -78,15 +83,18 @@
         }
     }
 
-    // Forcefully clear session and redirect to login (for unauthorized access)
+    // Forcefully clear session and redirect to home (for unauthorized access)
     function requireLogin() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('userType');
         
         // Prevent back-button navigation to protected state
-        window.location.replace('login.html');
+        window.location.replace('index.html');
     }
+    
+    // Define global forceLogout for the global logout function
+    window.forceLogout = requireLogin;
 
     // Apply user info to DOM elements (called on DOMContentLoaded)
     function applyUserInfo() {

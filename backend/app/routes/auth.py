@@ -135,10 +135,16 @@ def admin_login():
 def get_profile():
     """Get user profile"""
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    from flask_jwt_extended import get_jwt
+    claims = get_jwt()
+    if claims.get('role') == 'admin' or claims.get('is_admin'):
+        from app.models import Admin
+        user = Admin.query.get(user_id)
+    else:
+        user = User.query.get(user_id)
     
     if not user:
-        return jsonify({'error': 'User not found'}), 404
+        return jsonify({'error': 'User/Admin not found'}), 404
     
     return jsonify({'user': user.to_dict()}), 200
 

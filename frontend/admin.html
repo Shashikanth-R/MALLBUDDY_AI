@@ -1,603 +1,495 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - MallBuddy</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>Mall Intelligence Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <style>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
         :root {
-            --primary: #111111;
-            --primary-light: #2A2A2A;
-            --accent: #C9A45C;
-            --accent-dark: #A88645;
-            --accent-light: #F4EAD3;
-            --bg-color: #FAFAFA;
-            --text-dark: #111111;
-            --text-light: #666666;
-            --white: #FFFFFF;
-            --danger: #991B1B;
-            --danger-bg: #FEE2E2;
-            --success: #166534;
-            --success-bg: #DCFCE7;
-            --border-color: #E5E5E5;
+            --bg-main: #F7F5F1;
+            --bg-sidebar: #1C1C1C;
+            --bg-card: #FFFFFF;
+            --text-primary: #171717;
+            --text-secondary: #6B6B6B;
+            --text-sidebar: #A0A0A0;
+            --text-sidebar-hover: #FFFFFF;
+            --accent-gold: #C9A45C;
+            --accent-gold-light: rgba(201, 164, 92, 0.1);
+            --border-light: rgba(0,0,0,0.06);
+            --border-sidebar: rgba(255,255,255,0.05);
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-dark);
-        }
-
-        .admin-header {
-            background: var(--primary);
-            color: var(--white);
-            padding: 24px 40px;
+            background: var(--bg-main);
+            color: var(--text-primary);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--accent);
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .admin-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            color: var(--accent);
-        }
-
-        .admin-user {
+        /* Sidebar Layout */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-sidebar);
+            color: var(--text-sidebar);
             display: flex;
-            align-items: center;
-            gap: 24px;
-            font-weight: 500;
-        }
-
-        .btn-logout {
-            background: transparent;
-            color: var(--white);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 10px 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .btn-logout:hover {
-            background: var(--white);
-            color: var(--primary);
-            border-color: var(--white);
-        }
-
-        .admin-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 30px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .stat-card {
-            background: var(--white);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        }
-
-        .stat-value {
-            font-family: 'Playfair Display', serif;
-            font-size: 42px;
-            font-weight: 600;
-            color: var(--primary);
-            margin: 12px 0;
-        }
-
-        .stat-label {
-            color: var(--text-light);
-            font-size: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 32px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .tab {
-            padding: 16px 0;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 16px;
-            color: var(--text-light);
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .tab:hover {
-            color: var(--primary);
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--accent);
-            font-weight: 600;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.4s ease forwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .content-card {
-            background: var(--white);
-            padding: 32px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: var(--white);
-            border: 1px solid var(--primary);
-            padding: 12px 28px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            margin-bottom: 24px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-light);
-            box-shadow: 0 4px 12px rgba(17, 17, 17, 0.2);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 15px;
-        }
-
-        th {
-            background: var(--bg-color);
-            font-weight: 600;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 13px;
-        }
-        
-        tr:hover td {
-            background: rgba(0,0,0,0.01);
-        }
-
-        .btn-edit, .btn-delete {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            margin-right: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .btn-edit {
-            background: var(--accent-light);
-            color: var(--accent-dark);
-        }
-        
-        .btn-edit:hover {
-            background: var(--accent);
-            color: var(--white);
-        }
-
-        .btn-delete {
-            background: var(--danger-bg);
-            color: var(--danger);
-        }
-        
-        .btn-delete:hover {
-            background: var(--danger);
-            color: var(--white);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(17, 17, 17, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: var(--white);
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 40px;
-            border-radius: 8px;
-            max-height: 90vh;
+            flex-direction: column;
+            border-right: 1px solid var(--border-sidebar);
+            flex-shrink: 0;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+            z-index: 1000;
         }
 
-        .form-group {
-            margin-bottom: 24px;
-        }
+        .sidebar-header { padding: 24px; border-bottom: 1px solid var(--border-sidebar); }
 
-        .form-label {
-            display: block;
-            font-weight: 500;
-            margin-bottom: 10px;
-            color: var(--primary);
-            font-size: 15px;
-        }
-
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            transition: border-color 0.3s ease;
-            background: var(--bg-color);
-        }
-        
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: var(--white);
-        }
-
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 16px;
-            justify-content: flex-end;
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .btn-cancel {
-            background: var(--bg-color);
-            color: var(--text-dark);
-            border: 1px solid var(--border-color);
-            padding: 12px 28px;
-            border-radius: 4px;
+        .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--accent-gold);
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
         
-        .btn-cancel:hover {
-            background: #EAEAEA;
+        .brand-subtitle { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; color: var(--text-sidebar); }
+
+        .nav-section { padding: 20px 0 8px 24px; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.3); font-weight: 600; }
+        .nav-items { display: flex; flex-direction: column; padding: 0 12px; gap: 4px; }
+        .nav-item { padding: 10px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 500; font-size: 14px; transition: all 0.2s ease; color: var(--text-sidebar); border: 1px solid transparent; }
+        .nav-item:hover { background: rgba(255,255,255,0.03); color: var(--text-sidebar-hover); }
+        .nav-item.active { background: var(--accent-gold-light); color: var(--accent-gold); border: 1px solid rgba(201, 164, 92, 0.2); }
+
+        .sidebar-footer { margin-top: auto; padding: 24px; border-top: 1px solid var(--border-sidebar); }
+        .user-profile { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.03); padding: 12px 16px; border-radius: 8px; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 32px; height: 32px; background: var(--accent-gold); color: var(--bg-sidebar); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .btn-logout { background: none; border: none; color: var(--text-sidebar); cursor: pointer; padding: 4px; border-radius: 4px; }
+        .btn-logout:hover { color: var(--danger); background: rgba(239, 68, 68, 0.1); }
+
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+        .topbar {
+            height: 72px; background: var(--bg-card); border-bottom: 1px solid var(--border-light);
+            display: flex; align-items: center; padding: 0 32px; justify-content: space-between;
         }
+        .topbar-title { font-size: 20px; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 12px; }
+        .mobile-menu-btn { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; }
+        .content-scroll { flex: 1; overflow-y: auto; padding: 32px; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* KPI Cards */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .kpi-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.04); border-color: var(--accent-gold); }
+        .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-gold); }
+        .kpi-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .kpi-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .kpi-icon { color: var(--accent-gold); background: var(--accent-gold-light); padding: 8px; border-radius: 8px; }
+        .kpi-value { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 600; color: var(--text-primary); }
+        .kpi-trend { margin-top: 8px; font-size: 13px; display: flex; align-items: center; gap: 4px; color: var(--text-secondary); }
+        .trend-up { color: var(--success); font-weight: 500; }
+        .trend-down { color: var(--danger); font-weight: 500; }
+
+        /* Charts & Cards */
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 24px; margin-bottom: 32px; }
+        .chart-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .chart-card.full-width { grid-column: 1 / -1; }
+        .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .chart-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+
+        /* Insights Cards */
+        .insight-card { border: 1px solid var(--border-light); border-radius: 8px; padding: 24px; margin-bottom: 24px; background: #FFF; box-shadow: 0 2px 8px rgba(0,0,0,0.02); position: relative; }
+        .insight-high { border-left: 4px solid var(--danger); }
+        .insight-medium { border-left: 4px solid var(--warning); }
+        .insight-low { border-left: 4px solid var(--info); }
+        .insight-type-badge { position: absolute; top: 24px; right: 24px; background: var(--bg-main); padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
+        .insight-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; padding-right: 120px; }
+        .insight-evidence { margin-bottom: 16px; font-size: 14px; color: var(--text-secondary); padding-left: 16px; border-left: 2px solid var(--border-light); }
+        .insight-action { background: var(--bg-main); padding: 16px; border-radius: 8px; font-size: 14px; border: 1px solid var(--border-light); display: flex; gap: 12px; align-items: flex-start; }
+
+        /* Store Rankings */
+        .store-ranking-item { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+        .store-rank { width: 24px; font-weight: 600; color: var(--text-secondary); font-size: 14px; }
+        .store-name { width: 120px; font-weight: 500; font-size: 14px; }
+        .store-bar-track { flex: 1; height: 8px; background: var(--bg-main); border-radius: 4px; overflow: hidden; }
+        .store-bar-fill { height: 100%; background: var(--accent-gold); border-radius: 4px; }
+        .store-value { width: 60px; text-align: right; font-weight: 600; font-size: 14px; }
+
+        /* State Classes (Loading, Empty, Error) */
+        .state-container { padding: 40px; text-align: center; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .skeleton { animation: skeleton-loading 1s linear infinite alternate; background-color: var(--bg-main); border-radius: 4px; height: 20px; width: 100%; margin-bottom: 8px; }
+        @keyframes skeleton-loading { 0% { background-color: #f0f0f0; } 100% { background-color: #e0e0e0; } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; top: 0; left: 0; height: 100%; transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-menu-btn { display: block; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .content-scroll { padding: 16px; }
+        }
+
+        /* Buttons & Tables from original UI mapped to new styles */
+        .data-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 12px; padding: 24px; margin-bottom: 32px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 16px; text-align: left; border-bottom: 1px solid var(--border-light); font-size: 14px; }
+        th { font-weight: 600; color: var(--text-secondary); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; background: #F9F9F9; }
+        tr:hover td { background: #FAFAFA; }
+        .btn-primary { background: var(--accent-gold); color: #FFF; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 500; cursor: pointer; transition: opacity 0.2s; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background: var(--bg-main); color: var(--text-primary); border: 1px solid var(--border-light); padding: 8px 16px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+        .status-badge { padding: 4px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; }
+        .status-active { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-inactive { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        
+        /* Modals and Forms */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-content { background: var(--bg-card); width: 100%; max-width: 500px; padding: 32px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--text-secondary); margin-bottom: 8px; }
+        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px; border: 1px solid var(--border-light); border-radius: 8px; font-family: inherit; font-size: 14px; background: #FAFAFA; }
+        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent-gold); background: #FFF; }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; }
+        .btn-cancel { padding: 10px 20px; border: 1px solid var(--border-light); background: transparent; border-radius: 6px; cursor: pointer; }
     </style>
     <script src="config.js"></script>
     <script src="auth-guard.js"></script>
 </head>
-
 <body>
-    <div class="admin-header">
-        <div class="admin-title" style="cursor: pointer;" onclick="window.location.href='index.html'">🏬 MallBuddy Admin
-            Dashboard</div>
-        <div class="admin-user">
-            <span id="adminName">Admin</span>
-            <button class="btn-logout" onclick="logout()">Logout</button>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="brand" onclick="window.location.href='index.html'">
+                <i data-lucide="building-2"></i>
+                MallBuddy
+            </div>
+            <div class="brand-subtitle">Intelligence Hub</div>
+        </div>
+        
+        <div class="nav-section">Intelligence</div>
+        <div class="nav-items">
+            <div class="nav-item active" onclick="switchTab('overview')"><i data-lucide="layout-dashboard" size="18"></i> Executive Overview</div>
+            <div class="nav-item" onclick="switchTab('insights')"><i data-lucide="lightbulb" size="18"></i> MallBuddy Intelligence</div>
+            <div class="nav-item" onclick="switchTab('visitors')"><i data-lucide="users" size="18"></i> Visitor Intelligence</div>
+            <div class="nav-item" onclick="switchTab('stores-perf')"><i data-lucide="store" size="18"></i> Store Performance</div>
+            <div class="nav-item" onclick="switchTab('search-intel')"><i data-lucide="search" size="18"></i> Search Intelligence</div>
+            <div class="nav-item" onclick="switchTab('nav-intel')"><i data-lucide="map" size="18"></i> Navigation Intelligence</div>
+            <div class="nav-item" onclick="switchTab('segments')"><i data-lucide="pie-chart" size="18"></i> Customer Segments</div>
+            <div class="nav-item" onclick="switchTab('ai-intel')"><i data-lucide="bot" size="18"></i> AI Assistant Intel</div>
+        </div>
+
+        <div class="nav-section">Management</div>
+        <div class="nav-items">
+            <div class="nav-item" onclick="switchTab('stores')"><i data-lucide="shopping-bag" size="18"></i> Stores</div>
+            <div class="nav-item" onclick="switchTab('offers')"><i data-lucide="tag" size="18"></i> Offers</div>
+            <div class="nav-item" onclick="switchTab('events')"><i data-lucide="calendar" size="18"></i> Events</div>
+            <div class="nav-item" onclick="switchTab('facilities')"><i data-lucide="coffee" size="18"></i> Facilities</div>
+            <div class="nav-item" onclick="switchTab('users')"><i data-lucide="user-cog" size="18"></i> Users</div>
+        </div>
+        
+        <div class="nav-section">System</div>
+        <div class="nav-items">
+            <div class="nav-item" onclick="switchTab('chats')"><i data-lucide="message-square" size="18"></i> Chat History</div>
+            <div class="nav-item" onclick="switchTab('feedback')"><i data-lucide="star" size="18"></i> Feedback</div>
+            <div class="nav-item" onclick="switchTab('logs')"><i data-lucide="file-text" size="18"></i> Audit Logs</div>
+            <div class="nav-item" onclick="switchTab('settings')"><i data-lucide="settings" size="18"></i> Settings</div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-avatar">A</div>
+                    <div style="font-size: 13px; font-weight: 500;" id="adminName">Admin</div>
+                </div>
+                <button class="btn-logout" onclick="showLogoutModal()" title="Logout"><i data-lucide="log-out" size="18"></i></button>
+            </div>
         </div>
     </div>
 
-    <div class="admin-container">
-        <!-- Live Statistics -->
-        <div class="stats-grid" id="liveStats">
-            <div class="stat-card">
-                <div class="stat-label">Active Visitors</div>
-                <div class="stat-value" id="activeVisitors">0</div>
-                <div class="stat-sub">Live now</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Total Users</div>
-                <div class="stat-value" id="totalUsers">0</div>
-                <div class="stat-sub">Registered users</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Today's Chats</div>
-                <div class="stat-value" id="todayChats">0</div>
-                <div class="stat-sub">Messages sent</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Pending Feedback</div>
-                <div class="stat-value" id="pendingFeedback">0</div>
-                <div class="stat-sub">Needs attention</div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="topbar">
+            <div class="topbar-title">
+                <button class="mobile-menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')"><i data-lucide="menu"></i></button>
+                <span id="topbarTitle">Executive Overview</span>
             </div>
         </div>
-
-        <!-- Tabs -->
-        <div class="dashboard-tabs">
-            <div class="tabs-scroll">
-                <button class="tab active" onclick="switchTab('analytics')">📊 Analytics</button>
-                <button class="tab" onclick="switchTab('ai-assistant')">🤖 AI Assistant</button>
-                <button class="tab" onclick="switchTab('users')">👥 Users</button>
-                <button class="tab" onclick="switchTab('chats')">💬 Chat History</button>
-                <button class="tab" onclick="switchTab('stores')">🏪 Stores</button>
-                <button class="tab" onclick="switchTab('offers')">🏷️ Offers</button>
-                <button class="tab" onclick="switchTab('events')">📅 Events</button>
-                <button class="tab" onclick="switchTab('facilities')">🚽 Facilities</button>
-                <button class="tab" onclick="switchTab('feedback')">📝 Feedback</button>
-                <button class="tab" onclick="switchTab('logs')">📄 Logs</button>
-                <button class="tab" onclick="switchTab('settings')">⚙️ Settings</button>
-            </div>
-        </div>
-
-        <!-- Analytics Tab -->
-        <div id="analytics-tab" class="tab-content active">
-            <div class="analytics-grid">
-                <div class="content-card full-width">
-                    <h3>Chat Activity (Last 7 Days)</h3>
-                    <div class="chart-container" id="chatActivityChart" style="height: 300px;"></div>
+        
+        <div class="content-scroll" id="contentScroll">
+            
+            <!-- OVERVIEW TAB -->
+            <div id="overview-tab" class="tab-content active">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Active Visitors</span><i data-lucide="users" class="kpi-icon" size="20"></i></div>
+                        <div class="kpi-value" id="kpiActiveVisitors">--</div>
+                        <div class="kpi-trend"><span class="trend-up" id="kpiActiveVisitorsTrend">Currently active</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Total Visitors</span><i data-lucide="activity" class="kpi-icon" size="20"></i></div>
+                        <div class="kpi-value" id="kpiTotalVisitors">--</div>
+                        <div class="kpi-trend"><span>Today</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">AI Queries</span><i data-lucide="message-circle" class="kpi-icon" size="20"></i></div>
+                        <div class="kpi-value" id="kpiAiQueries">--</div>
+                        <div class="kpi-trend"><span>Requests handled</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Nav Requests</span><i data-lucide="map-pin" class="kpi-icon" size="20"></i></div>
+                        <div class="kpi-value" id="kpiNavRequests">--</div>
+                        <div class="kpi-trend"><span>Wayfinding routes</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Store Engagements</span><i data-lucide="store" class="kpi-icon" size="20"></i></div>
+                        <div class="kpi-value" id="kpiStoreEngagement">--</div>
+                        <div class="kpi-trend"><span>Details viewed</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Offer Interactions</span><i data-lucide="tag" class="kpi-icon" size="20"></i></div>
+                        <div class="kpi-value" id="kpiOfferInteractions">--</div>
+                        <div class="kpi-trend"><span>Redemption intent</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Upcoming Events</span><i class="kpi-icon" data-lucide="calendar" size="20"></i></div>
+                        <div class="kpi-value" id="kpiUpcomingEvents">--</div>
+                        <div class="kpi-trend"><span>Scheduled</span></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-header"><span class="kpi-title">Customer Feedback</span><i class="kpi-icon" data-lucide="star" size="20"></i></div>
+                        <div class="kpi-value" id="kpiFeedback">--</div>
+                        <div class="kpi-trend"><span>Pending review</span></div>
+                    </div>
                 </div>
-                <div class="content-card">
-                    <h3>Top Categories</h3>
-                    <div class="chart-container" id="categoryChart" style="height: 300px;"></div>
-                </div>
-                <div class="content-card">
-                    <h3>Popular Questions</h3>
-                    <div class="popular-keywords" id="popularKeywords"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Users Tab -->
-        <div id="users-tab" class="tab-content">
-            <div class="content-card">
-                <div class="toolbar">
-                    <input type="text" id="userSearch" placeholder="Search users..." class="search-input">
-                </div>
-                <table id="usersTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Joined</th>
-                            <th>Last Login</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Chats Tab -->
-        <div id="chats-tab" class="tab-content">
-            <div class="content-card">
-                <table id="chatsTable">
-                    <thead>
-                        <tr>
-                            <th>Session ID</th>
-                            <th>Started</th>
-                            <th>Messages</th>
-                            <th>Last Activity</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Stores Tab -->
-        <div id="stores-tab" class="tab-content">
-            <div class="content-card">
-                <button class="btn-primary" onclick="openStoreModal()">+ Add New Store</button>
-                <table id="storesTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Floor</th>
-                            <th>Unit</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Offers Tab -->
-        <div id="offers-tab" class="tab-content">
-            <div class="content-card">
-                <button class="btn-primary" onclick="openOfferModal()">+ Add New Offer</button>
-                <table id="offersTable">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Store</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Featured</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Events Tab -->
-        <div id="events-tab" class="tab-content">
-            <div class="content-card">
-                <button class="btn-primary" onclick="openEventModal()">+ Add New Event</button>
-                <table id="eventsTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Date</th>
-                            <th>Location</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Facilities Tab -->
-        <div id="facilities-tab" class="tab-content">
-            <div class="content-card">
-                <button class="btn-primary" onclick="openFacilityModal()">+ Add New Facility</button>
-                <table id="facilitiesTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Type</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Feedback Tab -->
-        <div id="feedback-tab" class="tab-content">
-            <div class="content-card">
-                <table id="feedbackTable">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Message</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Logs Tab -->
-        <div id="logs-tab" class="tab-content">
-            <div class="content-card">
-                <table id="logsTable">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Admin</th>
-                            <th>Action</th>
-                            <th>Entity</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Settings Tab -->
-        <div id="settings-tab" class="tab-content">
-            <div class="content-card settings-card">
-                <h3>Chatbot Configuration</h3>
-                <form id="settingsForm">
-                    <!-- Settings loaded dynamically -->
-                </form>
-                <button class="btn-primary" onclick="saveSettings()">Save Configuration</button>
-            </div>
-        </div>
-
-        <!-- AI Assistant Tab -->
-        <div id="ai-assistant-tab" class="tab-content">
-            <div class="content-card">
-                <h3>Admin AI BI Assistant</h3>
-                <p style="color: #666; margin-bottom: 20px; font-size: 14px;">Ask questions about visitor analytics, store performance, offer metrics, and retail demand signals.</p>
                 
-                <div class="chat-interface" style="display: flex; flex-direction: column; height: 500px; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: white;">
-                    <!-- Messages container -->
-                    <div id="aiChatMessages" style="flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #fafafa;">
-                        <div style="background: #efe7f7; color: #333; padding: 12px 16px; border-radius: 12px; max-width: 80%; align-self: flex-start; line-height: 1.5; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                            Hello! I am your Business Intelligence Assistant. Ask me anything about MallBuddy's operations or analytics. E.g., "What category has the highest demand gap?" or "Compare the active store performance."
+                <div class="charts-grid">
+                    <div class="chart-card full-width">
+                        <div class="chart-header">
+                            <div class="chart-title">Mall Pulse</div>
+                            <button class="btn-secondary" onclick="loadOverviewData()"><i data-lucide="refresh-cw" size="14"></i> Refresh</button>
+                        </div>
+                        <div id="pulseChartContainer"><canvas id="mallPulseChart" height="280"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INSIGHTS TAB -->
+            <div id="insights-tab" class="tab-content">
+                <div class="chart-title" style="margin-bottom: 24px;">MallBuddy AI Insights</div>
+                <div id="insightsContainer">
+                    <div class="state-container"><div class="skeleton"></div><div class="skeleton" style="width:70%"></div></div>
+                </div>
+            </div>
+
+            <!-- VISITORS TAB -->
+            <div id="visitors-tab" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card full-width">
+                        <div class="chart-title">Visitor Footfall Trend</div>
+                        <div id="visitorTrendContainer"><canvas id="visitorTrendChart" height="300"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STORES PERF TAB -->
+            <div id="stores-perf-tab" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div class="chart-title">Top Performing Stores</div>
+                        <div id="topStoresContainer">
+                            <div class="state-container"><i data-lucide="bar-chart-2" size="32"></i><span>Loading rankings...</span></div>
                         </div>
                     </div>
-                    
-                    <!-- Chat input controls -->
-                    <div style="display: flex; border-top: 1px solid #e0e0e0; padding: 15px; gap: 10px; background: white;">
-                        <input type="text" id="aiChatInput" placeholder="Ask a business intelligence question..." style="flex: 1; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px; font-family: inherit; outline: none; transition: border-color 0.2s;" onkeydown="if(event.key === 'Enter') sendAdminAIChatMessage()">
-                        <button class="btn-primary" style="margin-bottom: 0; padding: 0 24px; display: flex; align-items: center; justify-content: center;" onclick="sendAdminAIChatMessage()">Send</button>
+                    <div class="chart-card">
+                        <div class="chart-title">Category Distribution</div>
+                        <div id="categoryDistContainer"><canvas id="categoryDistChart" height="300"></canvas></div>
                     </div>
                 </div>
             </div>
+
+            <!-- SEARCH TAB -->
+            <div id="search-intel-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-title">Trending Search Keywords</div>
+                    <div id="searchKeywordsContainer" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px;">
+                        <div class="state-container"><div class="skeleton"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVIGATION TAB -->
+            <div id="nav-intel-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-title">A* Navigation Intelligence</div>
+                    <div style="margin-top: 16px;">
+                        <table id="navDestTable">
+                            <thead><tr><th>Destination</th><th>Requests</th></tr></thead>
+                            <tbody id="navDestTbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGMENTS TAB -->
+            <div id="segments-tab" class="tab-content">
+                <div class="charts-grid">
+                    <div class="chart-card full-width">
+                        <div class="chart-title">Customer Segmentation</div>
+                        <div id="segmentsContainer"><canvas id="segmentationChart" height="300"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI ASSISTANT TAB -->
+            <div id="ai-intel-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-title">Admin AI BI Assistant</div>
+                    <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 14px;">Ask questions about visitor analytics, store performance, offer metrics, and retail demand signals.</p>
+                    
+                    <div style="display: flex; flex-direction: column; height: 500px; border: 1px solid var(--border-light); border-radius: 8px; overflow: hidden;">
+                        <div id="aiChatMessages" style="flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; background: #FAFAFA;">
+                            <div style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-primary); padding: 16px; border-radius: 12px; max-width: 80%; align-self: flex-start; box-shadow: 0 2px 4px rgba(0,0,0,0.02); font-size: 14px;">
+                                Hello! I am your Business Intelligence Assistant. Ask me anything about MallBuddy's operations or analytics. E.g., "What category has the highest demand gap?"
+                            </div>
+                        </div>
+                        <div style="display: flex; border-top: 1px solid var(--border-light); padding: 16px; gap: 12px; background: var(--bg-card);">
+                            <input type="text" id="aiChatInput" placeholder="Ask a business intelligence question..." style="flex: 1; padding: 12px 16px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; font-family: inherit; font-size: 14px;" onkeydown="if(event.key === 'Enter') sendAdminAIChatMessage()">
+                            <button class="btn-primary" onclick="sendAdminAIChatMessage()"><i data-lucide="send" size="16"></i> Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- CRUD Sections (kept identical structure but updated classes) -->
+            <div id="stores-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title" style="margin:0">Manage Stores</h3>
+                        <button class="btn-primary" onclick="openStoreModal()"><i data-lucide="plus" size="16"></i> Add Store</button>
+                    </div>
+                    <table id="storesTable">
+                        <thead><tr><th>Name</th><th>Category</th><th>Floor</th><th>Unit</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="offers-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title" style="margin:0">Manage Offers</h3>
+                        <button class="btn-primary" onclick="openOfferModal()"><i data-lucide="plus" size="16"></i> Add Offer</button>
+                    </div>
+                    <table id="offersTable">
+                        <thead><tr><th>Title</th><th>Store</th><th>Start Date</th><th>End Date</th><th>Featured</th><th>Actions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="events-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title" style="margin:0">Manage Events</h3>
+                        <button class="btn-primary" onclick="openEventModal()"><i data-lucide="plus" size="16"></i> Add Event</button>
+                    </div>
+                    <table id="eventsTable">
+                        <thead><tr><th>Name</th><th>Date</th><th>Location</th><th>Actions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="facilities-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title" style="margin:0">Manage Facilities</h3>
+                        <button class="btn-primary" onclick="openFacilityModal()"><i data-lucide="plus" size="16"></i> Add Facility</button>
+                    </div>
+                    <table id="facilitiesTable">
+                        <thead><tr><th>Name</th><th>Type</th><th>Location</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="users-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title" style="margin:0">Manage Users</h3>
+                        <input type="text" id="userSearch" placeholder="Search users..." class="form-input" style="width: 250px;">
+                    </div>
+                    <table id="usersTable">
+                        <thead><tr><th>Name</th><th>Email</th><th>Joined</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="chats-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header"><h3 class="chart-title" style="margin:0">Chat History</h3></div>
+                    <table id="chatsTable">
+                        <thead><tr><th>Session ID</th><th>Started</th><th>Messages</th><th>Last Activity</th><th>Actions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="feedback-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header"><h3 class="chart-title" style="margin:0">Customer Feedback</h3></div>
+                    <table id="feedbackTable">
+                        <thead><tr><th>Type</th><th>Message</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="logs-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header"><h3 class="chart-title" style="margin:0">System Audit Logs</h3></div>
+                    <table id="logsTable">
+                        <thead><tr><th>Time</th><th>Admin</th><th>Action</th><th>Entity</th><th>Details</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="settings-tab" class="tab-content">
+                <div class="data-card">
+                    <div class="chart-header"><h3 class="chart-title" style="margin:0">System Settings</h3></div>
+                    <form id="settingsForm"></form>
+                    <button class="btn-primary" style="margin-top:20px;" onclick="saveSettings()">Save Configuration</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- Store Modal -->
+<!-- Store Modal -->
     <div id="storeModal" class="modal">
         <div class="modal-content">
             <h2 id="storeModalTitle">Add Store</h2>
@@ -692,8 +584,55 @@
         </div>
     </div>
 
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <h2 id="logoutModalTitle" style="margin-bottom: 20px;">Logout</h2>
+            <p style="margin-bottom: 30px; color: var(--text-muted);">Are you sure you want to logout?</p>
+            <div class="modal-actions" style="justify-content: center; gap: 15px;">
+                <button type="button" class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+                <button type="button" class="btn-primary" onclick="confirmLogout()" style="background-color: var(--danger); border-color: var(--danger);">Logout</button>
+            </div>
+        </div>
+    </div>
+
     <script src="config.js"></script>
     <script src="admin.js"></script>
-</body>
 
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Setup simple tab title change
+        const originalSwitchTab = window.switchTab;
+        window.switchTab = function(tab) {
+            // Remove active classes
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            
+            // Add active to current
+            const navItem = document.querySelector(`.nav-item[onclick="switchTab('${tab}')"]`);
+            if(navItem) {
+                navItem.classList.add('active');
+                document.getElementById('topbarTitle').textContent = navItem.textContent.trim();
+            }
+            
+            const tabContent = document.getElementById(`${tab}-tab`);
+            if(tabContent) tabContent.classList.add('active');
+            
+            // Call original if it exists
+            if (typeof originalSwitchTab === 'function') {
+                // original logic loads data based on tab
+                if(tab === 'overview') loadOverviewData();
+                else if(tab === 'insights') loadInsightsData();
+                else if(tab === 'segments') loadSegmentsData();
+                else originalSwitchTab(tab); 
+            }
+        }
+    </script>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
 </html>

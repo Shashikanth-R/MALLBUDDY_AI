@@ -1089,3 +1089,56 @@ def admin_ai_chat():
         return jsonify({'error': str(e)}), 500
 
 
+@bp.route('/analytics/insights', methods=['GET'])
+@admin_required
+def get_insights_analytics():
+    """Get AI business insights"""
+    try:
+        from app.models.analytics import AIBusinessInsight
+        start_date, end_date = parse_period_args()
+        insights = AIBusinessInsight.query.filter(
+            AIBusinessInsight.created_at >= start_date,
+            AIBusinessInsight.created_at <= end_date
+        ).order_by(desc(AIBusinessInsight.created_at)).all()
+        
+        result = []
+        for i in insights:
+            result.append({
+                'id': i.id,
+                'insight_type': i.insight_type,
+                'title': i.title,
+                'summary': i.summary,
+                'recommendation': i.recommendation,
+                'severity': i.severity,
+                'evidence': i.evidence,
+                'created_at': i.created_at.isoformat() if i.created_at else None
+            })
+        return jsonify({'insights': result}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@bp.route('/analytics/segments', methods=['GET'])
+@admin_required
+def get_segments_analytics():
+    """Get customer segmentation data"""
+    try:
+        from app.models.analytics import CustomerSegment
+        
+        segments = db.session.query(
+            CustomerSegment.segment_name,
+            func.count(CustomerSegment.id).label('count')
+        ).group_by(CustomerSegment.segment_name).all()
+        
+        result = []
+        for s in segments:
+            result.append({
+                'segment_name': s.segment_name or 'Uncategorized',
+                'count': s.count
+            })
+            
+        return jsonify({'segments': result}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
