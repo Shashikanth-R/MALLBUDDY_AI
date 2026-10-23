@@ -22,36 +22,39 @@ def chat():
     user_message = data.get('user_message')
     mall_id = data.get('mall_id', 1)
     
-    # Get or create session
-    session = ChatSession.query.filter_by(session_id=session_id).first()
-    if not session:
-        session = ChatSession(
-            session_id=session_id,
-            mall_id=mall_id
+    # Get or create session safely
+    session = None
+    try:
+        session = ChatSession.query.filter_by(session_id=session_id).first()
+        if not session:
+            session = ChatSession(
+                session_id=session_id,
+                mall_id=mall_id
+            )
+            db.session.add(session)
+            db.session.commit()
+        
+        # Save user message
+        user_msg = ChatMessage(
+            session_id=session.id,
+            role='user',
+            message=user_message
         )
-        db.session.add(session)
+        db.session.add(user_msg)
         db.session.commit()
-    
-    # Save user message
-    user_msg = ChatMessage(
-        session_id=session.id,
-        role='user',
-        message=user_message
-    )
-    db.session.add(user_msg)
-    db.session.commit()
-    
-    # Get session history for context
-    history = ChatMessage.query.filter_by(
-        session_id=session.id
-    ).order_by(ChatMessage.timestamp).all()
+    except Exception as e:
+        db.session.rollback()
+        print(f"⚠️ Chat DB session/message error: {e}")
     
     # Gather database context for better responses
-    db_context = {
-        'stores': [s.to_dict() for s in Store.query.filter_by(mall_id=mall_id).limit(10).all()],
-        'offers': [o.to_dict() for o in Offer.query.limit(5).all()],
-        'events': [e.to_dict() for e in Event.query.limit(3).all()]
-    }
+    db_context = {'stores': [], 'offers': [], 'events': []}
+    try:
+        db_context['stores'] = [s.to_dict() for s in Store.query.filter_by(mall_id=mall_id).limit(10).all()]
+        db_context['offers'] = [o.to_dict() for o in Offer.query.limit(5).all()]
+        db_context['events'] = [e.to_dict() for e in Event.query.limit(3).all()]
+    except Exception as e:
+        db.session.rollback()
+        print(f"⚠️ Chat DB context error: {e}")
     
     # Generate intelligent response using conversational chatbot
     try:
@@ -74,14 +77,19 @@ def chat():
         intent = 'error'
         suggestions = ['Show me stores', 'What offers are available?', 'Upcoming events']
     
-    # Save bot response
-    bot_msg = ChatMessage(
-        session_id=session.id,
-        role='bot',
-        message=response_text
-    )
-    db.session.add(bot_msg)
-    db.session.commit()
+    # Save bot response safely
+    if session:
+        try:
+            bot_msg = ChatMessage(
+                session_id=session.id,
+                role='bot',
+                message=response_text
+            )
+            db.session.add(bot_msg)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(f"⚠️ Chat save bot message error: {e}")
     
     return jsonify({
         'response': response_text,

@@ -109,18 +109,15 @@ def create_app(config_class=Config):
     def health():
         return {'status': 'healthy', 'service': 'MallBuddy API'}, 200
 
-    # SQLite is retained for local development. PostgreSQL production tables,
-    # including analytics, are managed by the existing schema/migrations and
-    # must not be silently created by the application process.
     with app.app_context():
         using_sqlite = db.engine.dialect.name == 'sqlite'
         app.logger.info('Database dialect in use: %s', db.engine.dialect.name)
-        if not using_sqlite:
-            app.logger.info('PostgreSQL schema management is external; skipping db.create_all and bootstrap seeds.')
-            return app
+        try:
+            db.create_all()
+            app.logger.info('Database tables created/verified')
+        except Exception as e:
+            app.logger.error('Failed to create database tables: %s', e)
 
-        db.create_all()
-        print("Local SQLite database tables created/verified")
         
         # Seed default admin user if not exists
         try:

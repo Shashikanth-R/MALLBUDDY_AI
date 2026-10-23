@@ -107,8 +107,12 @@ async function sendMessage() {
         console.error('Error connecting to backend:', error);
         removeTypingIndicator();
 
-        // Show error message to user
-        addMessage('Sorry, I\'m having trouble connecting to the server. Please make sure the backend is running on port 5000. 🔌', 'bot');
+        // Show friendly error message to user
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const msg = isLocal
+            ? 'Sorry, I\'m having trouble connecting to the server. Please make sure the local backend is running on port 5000. 🔌'
+            : 'Sorry, I\'m having trouble connecting to the server right now. The backend may be starting up or encountered an error. Please try again in a moment. 🔌';
+        addMessage(msg, 'bot');
     }
 }
 
