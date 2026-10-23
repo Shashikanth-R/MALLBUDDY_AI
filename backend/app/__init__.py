@@ -28,6 +28,20 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    # Verify primary database connectivity; if unreachable (e.g. suspended cloud database),
+    # safely fall back to local SQLite so the application stays fully functional.
+    db_uri = app.config.get('SQLALCHEMY_DATABASE_URI', 'sqlite:///mallbuddy.db')
+    if db_uri and not db_uri.startswith('sqlite'):
+        try:
+            from sqlalchemy import create_engine
+            test_engine = create_engine(db_uri, connect_args={'connect_timeout': 3})
+            with test_engine.connect() as conn:
+                pass
+            test_engine.dispose()
+        except Exception as conn_err:
+            app.logger.warning("Configured database connection failed (%s). Falling back to SQLite.", conn_err)
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mallbuddy.db'
+
     # Initialize extensions
     db.init_app(app)
     jwt.init_app(app)
