@@ -109,6 +109,34 @@ def create_app(config_class=Config):
     def health():
         return {'status': 'healthy', 'service': 'MallBuddy API'}, 200
 
+    @app.route('/api/debug/db')
+    def debug_db():
+        from sqlalchemy import inspect
+        diag = {
+            'dialect': db.engine.dialect.name,
+            'driver': db.engine.url.drivername,
+            'tables': [],
+            'error': None
+        }
+        try:
+            inspector = inspect(db.engine)
+            diag['tables'] = inspector.get_table_names()
+        except Exception as e:
+            diag['error'] = str(e)
+        return diag, 200
+
+    @app.errorhandler(500)
+    def handle_500(e):
+        import traceback
+        tb = traceback.format_exc()
+        app.logger.error(f"500 Error: {e}\n{tb}")
+        from flask import jsonify
+        return jsonify({
+            'error': 'Internal Server Error',
+            'detail': str(e),
+            'traceback': tb
+        }), 500
+
     with app.app_context():
         using_sqlite = db.engine.dialect.name == 'sqlite'
         app.logger.info('Database dialect in use: %s', db.engine.dialect.name)
