@@ -216,11 +216,24 @@ Important Guidelines:
                 print("⚠️ Gemini client not initialized, using fallback")
                 return self._fallback_response(user_message)
 
-            # Generate response using Gemini
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt
-            )
+            # Generate response using Gemini with candidate fallback
+            candidate_models = [self.model_name, 'gemini-2.5-flash', 'models/gemini-flash-latest']
+            response = None
+            last_err = None
+            for model_id in candidate_models:
+                try:
+                    response = self.client.models.generate_content(
+                        model=model_id,
+                        contents=prompt
+                    )
+                    if response and response.text:
+                        break
+                except Exception as model_err:
+                    last_err = model_err
+                    print(f"⚠️ Gemini model {model_id} error: {model_err}")
+            
+            if not response or not response.text:
+                raise last_err or Exception("All Gemini models failed to generate content")
             bot_response = response.text.strip()
             
             # Post-process: Ensure bullet points are on new lines
