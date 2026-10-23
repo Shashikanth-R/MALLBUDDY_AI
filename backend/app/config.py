@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import timedelta
 from dotenv import load_dotenv
 
@@ -19,6 +20,9 @@ class Config:
             _raw_db_url = _raw_db_url.replace('postgres://', 'postgresql+psycopg2://', 1)
         elif _raw_db_url.startswith('postgresql://'):
             _raw_db_url = _raw_db_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
+        
+        # Resolve bare Render PostgreSQL internal hostnames (dpg-xxxx-a) to full domain
+        _raw_db_url = re.sub(r'(@dpg-[a-z0-9]+-[a-z0-9]+)([:/])', r'\1.oregon-postgres.render.com\2', _raw_db_url)
     SQLALCHEMY_DATABASE_URI = _raw_db_url
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = DEBUG
